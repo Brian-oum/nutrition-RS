@@ -1,8 +1,8 @@
 <?php
-$host = "localhost"
-$username = "root"
-$password = ""
-$database = "nutrition"
+$host = "localhost";
+$username = "root";
+$password = "";
+$database = "nutrition";
 
 $conn = new mysqli($host, $email, $password, $database);
 
