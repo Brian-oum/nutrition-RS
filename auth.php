@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $email = $_POST["email"];
         $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
         $age = $_POST["age"];
-        $weight = $_POST["weight"];
+        $weights = $_POST["weight"];
 
         $check_email = "SELECT * FROM users WHERE email = '$email'";
         $result = $conn->query($check_email);
@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
                 $_SESSION['message'] = "<div class='alert error'>Registration failed! " . $conn->error . "</div>";
             }
         }   
-    }
+    }kkkk
      // Redirect to prevent resubmission
      header("Location: auth.php");
      exit();
