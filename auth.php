@@ -1,7 +1,5 @@
 <?php
-//import the database
 include 'db.php';
-
 session_start();
 
 $message = "";
@@ -21,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $age = $_POST["age"];
         $weight = $_POST["weight"];
 
-        // Using prepared statements to prevent SQL Injection
+        // Using prepared statements to prevent SQL Injection vulnerability
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -50,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        // Using prepared statements
+        // Using prepared statements for database queries
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
