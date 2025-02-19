@@ -1,12 +1,10 @@
 <?php
-//import the database
 include 'db.php';
-
 session_start();
 
 $message = "";
 
-// Fixing session message retrieval
+//Fixing session message retrieval.
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
     unset($_SESSION['message']);
@@ -21,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $age = $_POST["age"];
         $weights = $_POST["weight"];
 
-        // Using prepared statements to prevent SQL Injection
+        // Using prepared statements to prevent SQL Injection vulnerability
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -56,7 +54,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        // Using prepared statements
+        // Using prepared statements for database queries
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
