@@ -11,7 +11,7 @@ if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
     unset($_SESSION['message']);
 }
-
+//If else
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["register"])) {
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email = $_POST["email"];
         $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
         $age = $_POST["age"];
-        $weight = $_POST["weight"];
+        $weights = $_POST["weight"];
 
         // Using prepared statements to prevent SQL Injection
         $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -38,13 +38,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 $_SESSION['message'] = "<div class='alert error'>Registration failed! " . $conn->error . "</div>";
             }
+
+        }   
+    }
+     // Redirect to prevent resubmission
+     header("Location: auth.php");
+     exit();
         }
 
         $stmt->close();
         // Redirect to prevent form resubmission
         header("Location: auth.php");
         exit();
-    }
+    
 
     if (isset($_POST["login"])) {
         $email = $_POST["email"];
@@ -76,5 +82,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: auth.php");
         exit();
     }
-}
+
 ?>
