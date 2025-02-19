@@ -1,5 +1,7 @@
 <?php
+//import the database
 include 'db.php';
+
 session_start();
 
 $message = "";
