@@ -1,46 +1,64 @@
 <?php
-include 'db.php'
+include 'db.php';
 session_start();
 
 $message = "";
 
-If (isset($_SESSION['message'])){
-    $message = $_SESSION['messae'];
+// Fixing session message retrieval
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
     unset($_SESSION['message']);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    if (isset($_POST["register"])){
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["register"])) {
         $name = $_POST["name"];
         $email = $_POST["email"];
         $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
         $age = $_POST["age"];
         $weights = $_POST["weight"];
 
-        $check_email = "SELECT * FROM users WHERE email = '$email'";
-        $result = $conn->query($check_email);
+        // Using prepared statements to prevent SQL Injection
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $_SESSION['message'] = "<div class='alert error'>Email already exists!</div>";
         } else {
-            $sql = "INSERT INTO users (name, email, password, age, weight) VALUES ('$name', '$email', '$password', '$age', '$weight')";
-            if ($conn->query($sql) === true) {
+            $stmt = $conn->prepare("INSERT INTO users (name, email, password, age, weight) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("ssssi", $name, $email, $password, $age, $weight);
+
+            if ($stmt->execute()) {
                 $_SESSION['message'] = "<div class='alert success'>Registration successful! Proceed to Log in.</div>";
             } else {
                 $_SESSION['message'] = "<div class='alert error'>Registration failed! " . $conn->error . "</div>";
             }
+
         }   
-    }kkkk
+    }
      // Redirect to prevent resubmission
      header("Location: auth.php");
      exit();
+        }
 
-     if (isset($_POST["login"])) {
+        $stmt->close();
+        // Redirect to prevent form resubmission
+        header("Location: auth.php");
+        exit();
+    
+
+    if (isset($_POST["login"])) {
         $email = $_POST["email"];
         $password = $_POST["password"];
 
-        $sql = "SELECT * FROM users WHERE email = '$email'";
-        $result = $conn->query($sql);
+        // Using prepared statements
+        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
@@ -57,10 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             $_SESSION['message'] = "<div class='alert error'>User not found!</div>";
         }
 
-        // Redirect to prevent resubmission
+        $stmt->close();
+        // Redirect to prevent form resubmission
         header("Location: auth.php");
         exit();
     }
-}
-?>
 
+?>
