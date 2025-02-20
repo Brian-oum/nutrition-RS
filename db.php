@@ -1,12 +1,14 @@
 <?php
-$host = "localhost";
-$username = "root";
-$password = "";
-$database = "nutrition";
+$servername = "localhost";
+$username = "root"; // Change this if needed
+$password = ""; // Change this if needed
+$dbname = "nutrition_system";
 
-$conn = new mysqli($host, $email, $password, $database);
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error){
-    die("Connection failed" .$conn->connect_error);
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
 }
 ?>
