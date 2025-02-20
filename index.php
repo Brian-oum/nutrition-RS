@@ -39,6 +39,7 @@
                 <input type="password" name="password" placeholder="Enter Password" required>
                 <button type="submit" name="login">Login</button>
             </form>
+            <p><a href="#">Forgot Password?</a></p>
             <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
         </div>
     </div>
