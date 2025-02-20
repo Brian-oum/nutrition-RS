@@ -4,7 +4,7 @@
     box-sizing: border-box;
     font-family: 'Arial', sans-serif;
 }
-body{
+.login-body{
     background: linear-gradient(135deg, #00c6ff, #0072ff, #6a11cb);
     height: 100vh;
     display: flex;
@@ -85,4 +85,95 @@ body{
 .container a:hover{
     text-decoration: underline;
     color: #005bb5;
+}
+
+/* dashboard styles */
+.dash-body {
+
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: linear-gradient(135deg, #00c6ff, #0072ff, #6a11cb);
+}
+
+.nutrition-heading {
+    background: rgba(255, 255, 255, 0.9);
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 550px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.dashboard-container h2 {
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.dashboard-container p {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Maximum 3 per row */
+    gap: 15px;
+    list-style-type: none;
+    padding: 0;
+    justify-content: center;
+}
+
+.nav-grid li {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-grid li a {
+    display: block;
+    padding: 14px;
+    background: linear-gradient(90deg, #0072ff, #00c6ff);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    max-width: 170px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-grid li a:hover {
+    background: linear-gradient(90deg, #005bb5, #0098ff);
+    transform: scale(1.07);
+}
+
+
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    width: 100%;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: auto;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.1);
 }
