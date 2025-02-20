@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
+    <div class="login-body">
     <div class="container">
         <h2>Nutrition Recommender System</h2>
 
@@ -20,7 +21,7 @@
         ?>
 
         <!-- Registration Form -->
-        <div id="register-form">
+        <div id="register-form" style="display: none;">
             <h3>Register</h3>
             <form action="./pages/auth.php" method="POST">
                 <input type="text" name="username" placeholder="Enter Username" required>
@@ -32,7 +33,7 @@
         </div>
 
         <!-- Login Form -->
-        <div id="login-form" style="display: none;">
+        <div id="login-form">
             <h3>Login</h3>
             <form action="./pages/auth.php" method="POST">
                 <input type="text" name="identifier" placeholder="Enter Email or Username" required>
@@ -42,6 +43,7 @@
             <p><a href="#">Forgot Password?</a></p>
             <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
         </div>
+    </div>
     </div>
 
     <script src="./assets/js/script.js"></script>
