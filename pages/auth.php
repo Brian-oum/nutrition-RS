@@ -1,84 +1,70 @@
 <?php
-include 'db.php';
+include '../db.php';
 session_start();
 
-$message = "";
-
-//Fixing session message retrieval.
-if (isset($_SESSION['message'])) {
-    $message = $_SESSION['message'];
-    unset($_SESSION['message']);
-}
-//If else
-// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // Handle Registration
     if (isset($_POST["register"])) {
-        $name = $_POST["name"];
-        $email = $_POST["email"];
-        $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
-        $age = $_POST["age"];
-        $weights = $_POST["weight"];
+        $username = trim($_POST["username"]);
+        $email = trim($_POST["email"]);
+        $password = trim($_POST["password"]);
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-        // Using prepared statements to prevent SQL Injection vulnerability
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        // Check if email already exists
+        $stmt = $conn->prepare("SELECT id FROM caregiver WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
-        $result = $stmt->get_result();
+        $stmt->store_result();
 
-        if ($result->num_rows > 0) {
-            $_SESSION['message'] = "<div class='alert error'>Email already exists!</div>";
+        if ($stmt->num_rows > 0) {
+            $_SESSION['message'] = "Email is already registered!";
         } else {
-            $stmt = $conn->prepare("INSERT INTO users (name, email, password, age, weight) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssssi", $name, $email, $password, $age, $weight);
+            // Insert new user
+            $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $hashed_password);
 
             if ($stmt->execute()) {
-                $_SESSION['message'] = "<div class='alert success'>Registration successful! Proceed to Log in.</div>";
+                $_SESSION['message'] = "Registration successful! You can now log in.";
+                header("Location: ../index.php");
+                exit();
             } else {
-                $_SESSION['message'] = "<div class='alert error'>Registration failed! " . $conn->error . "</div>";
+                $_SESSION['message'] = "Registration failed! " . $conn->error;
             }
-
-        }   
-    }
-     // Redirect to prevent resubmission
-     header("Location: auth.php");
-     exit();
         }
-
         $stmt->close();
-        // Redirect to prevent form resubmission
-        header("Location: auth.php");
+        header("Location: ../index.php");
         exit();
-    
+    }
 
+    // Handle Login
     if (isset($_POST["login"])) {
-        $email = $_POST["email"];
-        $password = $_POST["password"];
+        $identifier = trim($_POST["identifier"]); // Can be email or username
+        $password = trim($_POST["password"]);
 
-        // Using prepared statements for database queries
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
-        $stmt->bind_param("s", $email);
+        // Query to check if the user exists with either email or username
+        $stmt = $conn->prepare("SELECT id, username, password FROM caregiver WHERE email = ? OR username = ?");
+        $stmt->bind_param("ss", $identifier, $identifier);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user["password"])) {
-                $_SESSION["caregiver_id"] = $user["id"];
-                $_SESSION["name"] = $user["name"];
-                $_SESSION["role"] = $user["role"];
-                header("Location: ../index.php");
+                // Store user info in session
+                $_SESSION["user_id"] = $user["id"];
+                $_SESSION["username"] = $user["username"];
+                header("Location: dashboard.php"); // Redirect to dashboard
                 exit();
             } else {
-                $_SESSION['message'] = "<div class='alert error'>Incorrect Password</div>";
+                $_SESSION['message'] = "Incorrect password!";
             }
         } else {
-            $_SESSION['message'] = "<div class='alert error'>User not found!</div>";
+            $_SESSION['message'] = "User not found!";
         }
-
         $stmt->close();
-        // Redirect to prevent form resubmission
-        header("Location: auth.php");
+        header("Location: ../index.php");
         exit();
     }
-
+}
 ?>
