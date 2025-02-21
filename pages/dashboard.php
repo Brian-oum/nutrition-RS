@@ -30,7 +30,7 @@ $username = $_SESSION["username"];
 
         <nav>
             <ul class="nav-grid">
-                <li><a href="#">Add Child Details</a></li>
+                <li><a href="./details.html">Add Child Details</a></li>
                 <li><a href="#">View Meal Plans</a></li>
                 <li><a href="#">Track Progress</a></li>
                 <li><a href="#">Change Username</a></li>
