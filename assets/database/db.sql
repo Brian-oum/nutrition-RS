@@ -10,3 +10,11 @@ CREATE TABLE caregiver (
     password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE children (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    weight FLOAT NOT NULL,
+    height FLOAT NOT NULL
+);
