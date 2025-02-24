@@ -43,7 +43,7 @@ session_start();
             font-size: 10vw;
             color: #fff;
             max-font-size: 40px;
-        }
+        }st
         .success-message {
             font-size: 5vw;
             color: #333;
