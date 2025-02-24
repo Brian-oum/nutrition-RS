@@ -44,7 +44,6 @@
             <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
         </div>
     </div>
-    <h2>Vicky</h2>
     </div>
 
     <script src="./assets/js/script.js"></script>
