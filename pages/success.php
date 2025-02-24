@@ -42,7 +42,7 @@ session_start();
             content: "✓";
             font-size: 10vw;
             color: #fff;
-            max-font-size: 40px;
+           font-size: 40px;
         }
         .success-message {
             font-size: 5vw;
