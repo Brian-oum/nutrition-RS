@@ -27,8 +27,8 @@
                 sessionStorage.setItem("otp", otp);
                 sessionStorage.setItem("email", email);
 
-                emailjs.init("fdBhukiJH5a0L2FUa"); // Replace with your EmailJS user ID
-                emailjs.send("service_07esa9d", "template_h2q7mxr", {
+                emailjs.init("user id"); // Replace with your EmailJS user ID
+                emailjs.send("serice id", "template id ", {
                     to_email: email,
                     otp_code: otp
                 }).then(function(response) {
