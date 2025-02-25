@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="./script.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Enter Your Email</h2>
+        
+        <input class="email" type="email" id="userEmail" placeholder="Enter your email" required>
+        <button type="submit" id="sendOTP">Send OTP</button>
+
+        <p id="emailMessage"></p>
+    </div>
+
+    <script>
+        document.getElementById("sendOTP").addEventListener("click", function() {
+            const email = document.getElementById("userEmail").value;
+            if (email) {
+                const otp = Math.floor(1000 + Math.random() * 9000);
+                sessionStorage.setItem("otp", otp);
+                sessionStorage.setItem("email", email);
+
+                emailjs.init("user id"); // Replace with your EmailJS user ID
+                emailjs.send("serice id", "template id ", {
+                    to_email: email,
+                    otp_code: otp
+                }).then(function(response) {
+                    alert("OTP sent successfully!");
+                    window.location.href = "otp_verification.html";
+                }, function(error) {
+                    alert("Error sending OTP!");
+                });
+            }
+        });
+    </script>
+</body>
+</html>

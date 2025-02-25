@@ -1,10 +1,10 @@
 <?php
-include '../db.php';
 session_start();
+include '../db.php'; // Include database connection
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
-    // Handle Registration
+    // Handle Registration (Step 1)
     if (isset($_POST["register"])) {
         $username = trim($_POST["username"]);
         $email = trim($_POST["email"]);
@@ -19,30 +19,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($stmt->num_rows > 0) {
             $_SESSION['message'] = "Email is already registered!";
+            header("Location: ../index.php");
+            exit();
         } else {
-            // Insert new user
-            $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $username, $email, $hashed_password);
+            // Store temporary user details in session
+            $_SESSION['temp_user'] = ['username' => $username, 'email' => $email, 'password' => $hashed_password];
 
-            if ($stmt->execute()) {
-                $_SESSION['message'] = "Registration successful! You can now log in.";
-                header("Location: ../index.php");
-                exit();
-            } else {
-                $_SESSION['message'] = "Registration failed! " . $conn->error;
-            }
+            // Redirect to email verification page
+            header("Location: ./email_verification.html?email=" . urlencode($email));
+            exit();
         }
-        $stmt->close();
-        header("Location: ../index.php");
+    }
+
+    // Handle OTP Verification (Step 3)
+if (isset($_POST["verify_otp"])) {
+    $username = $_POST["username"];
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    
+    if (isset($_SESSION['otp'])) {
+        // Insert user into the database after successful OTP verification
+        $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $username, $email, $password);
+
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Registration successful! Please log in.";
+            unset($_SESSION['otp']);  // Clear OTP
+            header("Location: ../index.php"); // Redirect to login
+            exit();
+        } else {
+            $_SESSION['message'] = "Error saving user!";
+            header("Location: ../otp_verification.html");
+            exit();
+        }
+    } else {
+        $_SESSION['message'] = "Invalid OTP!";
+        header("Location: ./otp_verification.html");
         exit();
     }
+}
+
 
     // Handle Login
     if (isset($_POST["login"])) {
-        $identifier = trim($_POST["identifier"]); // Can be email or username
+        $identifier = trim($_POST["identifier"]);
         $password = trim($_POST["password"]);
 
-        // Query to check if the user exists with either email or username
         $stmt = $conn->prepare("SELECT id, username, password FROM caregiver WHERE email = ? OR username = ?");
         $stmt->bind_param("ss", $identifier, $identifier);
         $stmt->execute();
@@ -51,10 +73,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
             if (password_verify($password, $user["password"])) {
-                // Store user info in session
                 $_SESSION["user_id"] = $user["id"];
                 $_SESSION["username"] = $user["username"];
-                header("Location: dashboard.php"); // Redirect to dashboard
+                header("Location: dashboard.php");
                 exit();
             } else {
                 $_SESSION['message'] = "Incorrect password!";
@@ -62,7 +83,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             $_SESSION['message'] = "User not found!";
         }
-        $stmt->close();
         header("Location: ../index.php");
         exit();
     }

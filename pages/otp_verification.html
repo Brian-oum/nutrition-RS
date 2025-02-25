@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="./script.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>OTP Verification</h2>
+        <p>Please type the verification code sent to <span id="emailDisplay"></span></p>
+        <p>The OTP will expire in the next <span id="expire">30</span>s</p>
+
+        <div class="row">
+            <input type="text" id="otpInput" placeholder="Enter OTP" required />
+        </div> 
+        <button id="verifyOTP">Verify OTP</button>
+
+        <p id="responseMessage"></p>
+        <p>Didn't receive the code? <a href="javascript:void(0)" id="resendOTP">Resend</a></p>
+    </div>
+
+    <script>
+        document.getElementById("emailDisplay").innerText = sessionStorage.getItem("email");
+    
+        document.getElementById("verifyOTP").addEventListener("click", function() {
+            const enteredOTP = document.getElementById("otpInput").value;
+            const storedOTP = sessionStorage.getItem("otp");
+    
+            if (enteredOTP === storedOTP) {
+                alert("OTP Verified Successfully!");
+    
+                // Get user details from sessionStorage
+                const username = sessionStorage.getItem("username");
+                const email = sessionStorage.getItem("email");
+                const password = sessionStorage.getItem("password");
+    
+                // Create a hidden form to send the data to auth.php
+                const form = document.createElement("form");
+                form.method = "POST";
+                form.action = "./auth.php";
+    
+                form.innerHTML = `
+                    <input type="hidden" name="username" value="${username}">
+                    <input type="hidden" name="email" value="${email}">
+                    <input type="hidden" name="password" value="${password}">
+                    <input type="hidden" name="verify_otp" value="1">
+                `;
+    
+                document.body.appendChild(form);
+                form.submit();
+            } else {
+                document.getElementById("responseMessage").innerText = "Incorrect OTP!";
+            }
+        });
+    </script>    
+</body>
+</html>
