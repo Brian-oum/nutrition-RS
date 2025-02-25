@@ -32,38 +32,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Handle OTP Verification (Step 3)
-    if (isset($_POST["verify_otp"])) {
-        $enteredOTP = $_POST["otp"];
+if (isset($_POST["verify_otp"])) {
+    $username = $_POST["username"];
+    $email = $_POST["email"];
+    $password = $_POST["password"];
+    
+    if (isset($_SESSION['otp'])) {
+        // Insert user into the database after successful OTP verification
+        $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $username, $email, $password);
 
-        if (isset($_SESSION['otp']) && $enteredOTP == $_SESSION['otp']) {
-            if (isset($_SESSION['temp_user'])) {
-                $user = $_SESSION['temp_user'];
-                $username = $user['username'];
-                $email = $user['email'];
-                $password = $user['password'];
-
-                // Insert user into the database
-                $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
-                $stmt->bind_param("sss", $username, $email, $password);
-
-                if ($stmt->execute()) {
-                    $_SESSION['message'] = "Registration successful! Please log in.";
-                    unset($_SESSION['otp']);
-                    unset($_SESSION['temp_user']);
-                    header("Location: ../index.php");
-                    exit();
-                } else {
-                    $_SESSION['message'] = "Error saving user!";
-                    header("Location: ./otp_verification.html");
-                    exit();
-                }
-            }
+        if ($stmt->execute()) {
+            $_SESSION['message'] = "Registration successful! Please log in.";
+            unset($_SESSION['otp']);  // Clear OTP
+            header("Location: ../index.php"); // Redirect to login
+            exit();
         } else {
-            $_SESSION['message'] = "Incorrect OTP!";
+            $_SESSION['message'] = "Error saving user!";
             header("Location: ../otp_verification.html");
             exit();
         }
+    } else {
+        $_SESSION['message'] = "Invalid OTP!";
+        header("Location: ./otp_verification.html");
+        exit();
     }
+}
+
 
     // Handle Login
     if (isset($_POST["login"])) {
