@@ -12,7 +12,9 @@ session_start();
 <body>
     <div class="success-container">
         <!-- Tick in a circle -->
-        <div class="tick-circle"></div>
+        <div class="tick-circle">
+            <div class="tick-mark"></div>
+        </div>
 
         <!-- Success message -->
         <div class="success-message">Details added successfully!</div>
