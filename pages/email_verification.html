@@ -32,8 +32,8 @@
         sessionStorage.setItem("username", username);
         sessionStorage.setItem("password", password);  // Store password in sessionStorage
 
-        emailjs.init("fdBhukiJH5a0L2FUa");
-        emailjs.send("service_07esa9d", "template_h2q7mxr", {
+        emailjs.init("public key");
+        emailjs.send("service id", "template id", {
             to_email: email,
             otp_code: otp
         }).then(function(response) {
