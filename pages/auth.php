@@ -32,47 +32,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Handle OTP Verification (Step 3)
-if (isset($_POST["verify_otp"])) {
-    $username = $_POST["username"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
+    if (isset($_POST["verify_otp"])) {
+        if (!isset($_SESSION['otp']) || $_SESSION['otp'] != $_POST["otp"]) {
+            $_SESSION['message'] = "Invalid OTP!";
+            header("Location: ./otp_verification.html");
+            exit();
+        }
     
-    if (isset($_SESSION['otp'])) {
-        // Insert user into the database after successful OTP verification
+        $username = $_SESSION['temp_user']['username'];
+        $email = $_SESSION['temp_user']['email'];
+        $password = $_SESSION['temp_user']['password']; // Already hashed
+    
         $stmt = $conn->prepare("INSERT INTO caregiver (username, email, password) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $username, $email, $password);
-
+    
         if ($stmt->execute()) {
             $_SESSION['message'] = "Registration successful! Please log in.";
-            unset($_SESSION['otp']);  // Clear OTP
-            header("Location: ../index.php"); // Redirect to login
+            unset($_SESSION['otp']);
+            unset($_SESSION['temp_user']);
+            header("Location: ../index.php");
             exit();
         } else {
-            $_SESSION['message'] = "Error saving user!";
+            $_SESSION['message'] = "Error saving user: " . $stmt->error;
             header("Location: ../otp_verification.html");
             exit();
         }
-    } else {
-        $_SESSION['message'] = "Invalid OTP!";
-        header("Location: ./otp_verification.html");
-        exit();
     }
-}
-
+    
 
     // Handle Login
     if (isset($_POST["login"])) {
         $identifier = trim($_POST["identifier"]);
         $password = trim($_POST["password"]);
-
+    
         $stmt = $conn->prepare("SELECT id, username, password FROM caregiver WHERE email = ? OR username = ?");
         $stmt->bind_param("ss", $identifier, $identifier);
         $stmt->execute();
         $result = $stmt->get_result();
-
+    
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            if (password_verify($password, $user["password"])) {
+            if (password_verify($password, $user["password"])) { // Correct way to compare passwords
                 $_SESSION["user_id"] = $user["id"];
                 $_SESSION["username"] = $user["username"];
                 header("Location: dashboard.php");
@@ -86,5 +86,6 @@ if (isset($_POST["verify_otp"])) {
         header("Location: ../index.php");
         exit();
     }
+    
 }
 ?>
