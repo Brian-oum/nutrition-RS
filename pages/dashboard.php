@@ -1,4 +1,12 @@
+<?php
+session_start();
 
+if(!isset($_SESSION["user_id"])){
+    header("location: ../index.php");
+}
+
+$username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest"
+?>
 
 <!DOCTYPE html>
 <html lang="en">
