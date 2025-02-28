@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
+<div class="forgot-password-body"> 
 <div class="forgot-password-container">
         <h2>Forgot Password</h2>
         <form action="./password_link.php" method="POST">
@@ -16,6 +17,7 @@
             </div>
             <button type="submit" class="submit-button">Send Reset Link</button>
         </form>
-    </div>
+</div>
+</div>
 </body>
 </html>

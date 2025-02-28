@@ -10,17 +10,19 @@ session_start();
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <div class="success-container">
-        <!-- Tick in a circle -->
-        <div class="tick-circle">
-            <div class="tick-mark"></div>
+    <div class="success-body">
+        <div class="success-container">
+            <!-- Tick in a circle -->
+            <div class="tick-circle">
+                <div class="tick-mark"></div>
+            </div>
+
+            <!-- Success message -->
+            <div class="success-message">Details added successfully!</div>
+
+            <!-- Button to go back to the homepage -->
+            <a href="./dashboard.php" class="home-button">Go Back to Homepage</a>
         </div>
-
-        <!-- Success message -->
-        <div class="success-message">Details added successfully!</div>
-
-        <!-- Button to go back to the homepage -->
-        <a href="./dashboard.php" class="home-button">Go Back to Homepage</a>
     </div>
 </body>
 </html>
