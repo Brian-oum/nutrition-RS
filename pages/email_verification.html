@@ -4,49 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verification</title>
-    <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="./script.js"></script>
 </head>
-
 <body>
     <div class="container">
-        <h2>Enter Your Email</h2>
-        
-        <input class="email" type="email" id="userEmail" placeholder="Enter your email" required>
+        <h2>Email Verification</h2>
+        <input class="email" type="email" id="userEmail" placeholder="Enter your email" required readonly>
         <button type="submit" id="sendOTP">Send OTP</button>
-
-        <p id="emailMessage"></p>
     </div>
 
     <script>
-        document.getElementById("sendOTP").addEventListener("click", function() {
-    const email = document.getElementById("userEmail").value;
-    const username = prompt("Enter your username:");
-    const password = prompt("Enter your password:");
-    
-    if (email && username && password) {
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        sessionStorage.setItem("otp", otp);
-        sessionStorage.setItem("email", email);
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("password", password);  // Store password in sessionStorage
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get("email");
+            document.getElementById("userEmail").value = email;
 
-        emailjs.init("public key");
-        emailjs.send("service id", "template id", {
-            to_email: email,
-            otp_code: otp
-        }).then(function(response) {
-            alert("OTP sent successfully!");
-            window.location.href = "otp_verification.html";
-        }, function(error) {
-            alert("Error sending OTP!");
+            document.getElementById("sendOTP").addEventListener("click", function() {
+                const otp = Math.floor(1000 + Math.random() * 9000);
+                sessionStorage.setItem("otp", otp); // Store OTP in sessionStorage
+
+                emailjs.init("your public key"); // Replace with your actual EmailJS public key
+                emailjs.send("your service id", "your template id", {
+                    to_email: email,
+                    otp_code: otp
+                }).then(function(response) {
+                    alert("OTP sent successfully!");
+                    window.location.href = "otp_verification.html";
+                }).catch(function(error) {
+                    alert("Error sending OTP!");
+                });
+            });
         });
-    } else {
-        alert("Please fill in all details!");
-    }
-});
-
     </script>
 </body>
 </html>
