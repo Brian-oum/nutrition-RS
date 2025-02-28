@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "db.php"; // Include your database connection file
+include "../db.php"; // Include your database connection file
 
 if (!isset($_GET["token"])) {
     die("Invalid token.");
