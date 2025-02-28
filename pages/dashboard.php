@@ -33,7 +33,7 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest"
                 <li><a href="#">Track Progress</a></li>
                 <li><a href="#">Change Username</a></li>
                 <li><a href="#">Change Password</a></li>
-                <li><a href="logout.php">Logout</a></li>
+                <li><a href="./logout.php">Logout</a></li>
             </ul>
         </nav>
     </div>
