@@ -5,51 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="./script.js"></script>
 </head>
-
 <body>
     <div class="container">
         <h2>OTP Verification</h2>
-        <p>Please type the verification code sent to <span id="emailDisplay"></span></p>
-        <p>The OTP will expire in the next <span id="expire">30</span>s</p>
+        <p>Please type the verification code sent to your email.</p>
+        <p>The OTP will expire in <span id="expire">30</span> seconds.</p>
 
-        <div class="row">
-            <input type="text" id="otpInput" placeholder="Enter OTP" required />
-        </div> 
+        <input type="text" id="otpInput" placeholder="Enter OTP" required />
         <button id="verifyOTP">Verify OTP</button>
 
         <p id="responseMessage"></p>
-        <p>Didn't receive the code? <a href="javascript:void(0)" id="resendOTP">Resend</a></p>
     </div>
 
     <script>
-        document.getElementById("emailDisplay").innerText = sessionStorage.getItem("email");
-    
-    document.getElementById("verifyOTP").addEventListener("click", function() {
-    const enteredOTP = document.getElementById("otpInput").value;
-    const storedOTP = sessionStorage.getItem("otp");
+        document.getElementById("verifyOTP").addEventListener("click", function() {
+            const enteredOTP = document.getElementById("otpInput").value;
+            const storedOTP = sessionStorage.getItem("otp"); // Get OTP from sessionStorage
 
-    if (enteredOTP === storedOTP) {
-        alert("OTP Verified Successfully!");
-
-        fetch('./auth.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `username=${encodeURIComponent(sessionStorage.getItem("username"))}&email=${encodeURIComponent(sessionStorage.getItem("email"))}&password=${encodeURIComponent(sessionStorage.getItem("password"))}&verify_otp=1`
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log(data);
-            window.location.href = "../index.php"; // Redirect to login
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        document.getElementById("responseMessage").innerText = "Incorrect OTP!";
-    }
-});
-
-
-    </script>    
+            if (enteredOTP === storedOTP) {
+                // OTP is correct, proceed to complete registration in PHP
+                fetch('./auth.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `verify_otp=1`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        alert("Registration successful!");
+                        window.location.href = "../index.php"; // Redirect to login
+                    } else {
+                        document.getElementById("responseMessage").innerText = data.message;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                document.getElementById("responseMessage").innerText = "Invalid OTP!";
+            }
+        });
+    </script>
 </body>
 </html>
