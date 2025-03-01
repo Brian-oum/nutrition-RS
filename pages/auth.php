@@ -30,7 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             ];
 
             // redirect to email verification page
-            header("Location: ./email_verification.php?email=" .urlencode($email));
+            header("Location: ./email_verification.html?email=" .urlencode($email));
             exit();
         }
     }
