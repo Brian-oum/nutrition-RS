@@ -116,7 +116,7 @@
     width: 90%;
     max-width: 550px;
     text-align: center;
-    margin-top: 40px;
+    margin-top: 40px;margin-bottom: 10px;
 }
 
 .dashboard-container h2 {
@@ -261,23 +261,7 @@
     text-decoration: underline;
     color: #005bb5;
 }
-/* Responsive Design */
-@media screen and (max-width: 600px) {
-    .details-container {
-        width: 100%; /* Full width on small screens */
-        max-width: 350px;
-    }
 
-    .details-container input {
-        font-size: 14px;
-        padding: 10px;
-    }
-
-    .details-container button {
-        font-size: 14px;
-        padding: 10px;
-    }
-}
 
 /*success style*/
 .success-body {
@@ -473,7 +457,7 @@
 .email-container button:hover {
     background: #0056b3;
 }
-.email-container .back-btn{
+.back-btn{
     display: inline-block;
     text-align: center;
     margin-top: 10px;
@@ -487,7 +471,71 @@
     text-decoration: none;
     transition: all 0.3s ease-in-out;
 }
-.email-container .back-btn:hover{
+ .back-btn:hover{
     background-color: #007bff;
     color: #fff;
+    text-decoration: none;
+}
+
+
+/* media queries */
+@media screen and (max-width: 1024px) {
+    .container,
+    .dashboard-container,
+    .details-container,
+    .success-container,
+    .forgot-password-container,
+    .email-container{
+        max-width: 70%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard-container{
+        max-width: 80%;
+    }
+    .nav-grid{
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .nav-grid li a{
+        font-size: 14px;
+        padding: 12px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container,
+    .dashboard-container,
+    .details-container,
+    .success-container,
+    .forgot-password-container,
+    .email-container{
+        width: 90%;
+        padding: 15px;
+    }
+    .container h2,
+    .dashboard-container h2,
+    .details-container h2,
+    .success-container h1,
+    .forgot-password-container h2,
+    .email-container h2{
+        font-size: 18px;
+    }
+    .container input,
+    .details-container input,
+    .form-group input{
+        padding: 10px;
+        font-size: 14px;
+    }
+    .container button,
+    .details-container button,
+    .submit-button,
+    .home-button,
+    .email-container button{
+        padding: 10px;
+        font-size: 14px;
+    }
+    .nav-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
 }
