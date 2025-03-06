@@ -160,67 +160,177 @@ body {
 .email-container .back-btn:hover{
     text-decoration: underline;
 }
+.message-box{
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+.message-box.success{
+    background: #e6ffed;
+    color: #2e7d32;
+    border-left: 5px solid #2e7d32;
+}
+.message-box.error{
+    background: #ffdddd;
+    color: #d8000c;
+    border-left: 5px solid #d8000c;
+}
 
-/* otp verification */
-.otp-body{
+.otp-body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     width: 100%;
+    background: #f4f7fc;
 }
-.otp-container{
+
+.otp-container {
     background: white;
-    padding: 2rem;
-    width: 350px;
+    padding: 2.5rem;
+    width: 380px;
     border-radius: var(--border-radius);
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
     text-align: center;
+    transition: all 0.3s ease-in-out;
 }
-.otp-container h2{
+
+.otp-container h2 {
     background: var(--primary-gradient);
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 1rem;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-size: 1.8rem;
 }
-.otp-container p{
+
+.otp-container p {
     font-size: 1rem;
     color: var(--text-color);
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
-#expire{
+
+#emailMessage {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+#expire {
     font-weight: bold;
     color: red;
 }
-.otp-container input{
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: var(--border-radius);
-    font-size: 2rem;
-    text-align: center;
-}
-.otp-container button{
+
+.otp-container input {
     width: 100%;
     padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1.2rem;
+    text-align: center;
+    font-family: monospace;
+    letter-spacing: 2px;
+    outline: none;
+    transition: border 0.3s ease-in-out;
+}
+
+.otp-container input:focus {
+    border: 1px solid var(--primary-color);
+}
+
+.otp-container button {
+    width: 100%;
+    padding: 14px;
     background: var(--primary-gradient);
     color: white;
     border: none;
     border-radius: var(--border-radius);
     font-size: 1rem;
     cursor: pointer;
-    transition: background var(--transition-speed);
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+    position: relative;
 }
-.otp-container button:hover{
+
+.otp-container button:hover {
     background: linear-gradient(90deg, #388E3C, #1B5E20);
+    transform: translateY(-2px);
 }
-#responseMessage{
+
+.otp-container button.loading {
+    pointer-events: none;
+}
+
+.otp-container button.loading::after {
+    content: "";
+    position: absolute;
+    right: 20px;
+    width: 16px;
+    height: 16px;
+    border: 3px solid white;
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+
+#resendOTP {
+    display: none;
+    background: #d32f2f;
     margin-top: 10px;
+}
+
+#resendOTP:hover {
+    background: #b71c1c;
+}
+
+#responseMessage {
+    margin-top: 12px;
     font-size: 1rem;
-    font-weight: 500;
-    color: #d8000c;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: var(--border-radius);
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.success {
+    color: #155724;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+.error {
+    color: #721c24;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+.back-btn {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.back-btn:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /*  dashboard styles */
