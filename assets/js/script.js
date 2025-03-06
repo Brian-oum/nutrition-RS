@@ -62,3 +62,24 @@ document.getElementById("verifyOTP").addEventListener("click", function() {
         document.getElementById("responseMessage").innerText = "Invalid OTP!";
     }
 });
+
+
+// dashboard dynamic-content
+function loadContent(page) {
+    event.preventDefault();
+
+    let contentDiv = document.getElementById("dynamic-content");
+
+    
+    contentDiv.innerHTML = "<p>Loading...</p>";
+
+    fetch(page) 
+        .then(response => response.text())
+        .then(data => {
+            contentDiv.innerHTML = data;
+        })
+        .catch(error => {
+            console.error("Error loading content:", error);
+            contentDiv.innerHTML = "<p>Failed to load content.</p>";
+        });
+}
