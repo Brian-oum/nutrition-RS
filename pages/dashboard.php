@@ -1,11 +1,6 @@
 <?php
 session_start();
-
-if(!isset($_SESSION["user_id"])){
-    header("location: ../index.php");
-}
-
-$username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest"
+$username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
 ?>
 
 <!DOCTYPE html>
@@ -14,33 +9,67 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest"
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Nutrition System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
-    <div class="dash-body">
-    <header class="nutrition-heading">
-        <h2>Nutrition Recommender System</h2>
-    </header>
 
-    <div class="dashboard-container">
+<div class="dashboard-wrapper">
+    <!-- Sidebar -->
+    <nav class="sidebar">   
+        <h2 class="sidebar-title">Nutrition System</h2>
+
+        <ul>
+            <li>
+                <a href="#" onclick="loadContent('details.php')" data-tooltip="Add Child Details">
+                    <i class="fas fa-child"></i>
+                    <span class="link-text">Add Child Details</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('view_meal_plans.php')" data-tooltip="View Meal Plans">
+                    <i class="fas fa-utensils"></i>
+                    <span class="link-text">View Meal Plans</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('track_progress.php')" data-tooltip="Track Progress">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="link-text">Track Progress</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('change_username.php')" data-tooltip="Change Username">
+                    <i class="fas fa-user-edit"></i>
+                    <span class="link-text">Change Username</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" onclick="loadContent('change_password.php')" data-tooltip="Change Password">
+                    <i class="fas fa-lock"></i>
+                    <span class="link-text">Change Password</span>
+                </a>
+            </li>
+            <li>
+                <a href="logout.php" data-tooltip="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="link-text">Logout</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content">
         <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
         <p>Manage your child's nutrition with personalized recommendations.</p>
+        <div id="dynamic-content">
+            <p>Select an option from the sidebar.</p>
+        </div>
+    </main>
+</div>
 
-        <nav>
-            <ul class="nav-grid">
-                <li><a href="./details.html">Add Child Details</a></li>
-                <li><a href="#">View Meal Plans</a></li>
-                <li><a href="#">Track Progress</a></li>
-                <li><a href="#">Change Username</a></li>
-                <li><a href="#">Change Password</a></li>
-                <li><a href="./logout.php">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
+<script src="../assets/js/script.js"></script>
 
-    <footer class="footer">
-        <p>&copy; 2025 Nutrition Recommender System. All Rights Reserved.</p>
-    </footer>
-    </div>
 </body>
 </html>
