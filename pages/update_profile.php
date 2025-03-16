@@ -59,6 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Update Profile</title>
 <style>   
 /*Update profile*/
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
 .profile-form {
     background-color: #fff;
     padding: 20px;
