@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const otp = Math.floor(1000 + Math.random() * 9000);
         sessionStorage.setItem("otp", otp); // Store OTP in sessionStorage
 
-        emailjs.init("n1mynshmvV-ncZptA"); // Replace with your actual EmailJS public key
+        emailjs.init("L5PzYj2MAUuZ4E9f4"); // Replace with your actual EmailJS public key
         emailjs.send("service_07esa9d", "template_h2q7mxr", {
             to_email: email,
             otp_code: otp

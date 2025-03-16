@@ -27,10 +27,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Add Child Details</title>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
+<style>
+    .detail-container h2{
+        text-align: center;
+        text-transform: uppercase;
+    }
+       .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        form input,
+        form select,
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        form button:hover {
+            background: #218838;
+        }
+    </style>
 <body>
     <div class="detail-container">
         <h2>Add Child Details</h2>
         <form action="details.php" method="POST">
+            <label for="name">Name:</label>
             <input type="text" name="child_name" placeholder="Child's Name" required>
 
             <label for="gender">Gender:</label>
@@ -43,7 +94,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="dob">Date of Birth:</label>
             <input type="date" name="dob" required>
 
+            <label for="wieght">Weight</label>
             <input type="number" name="weight" placeholder="Weight (kg)" required>
+
+            <label for="height">Height</label>
             <input type="number" name="height" placeholder="Height (cm)" required>
 
             <label for="dietary_restrictions">Dietary Restrictions (Optional):</label>
@@ -51,7 +105,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <button type="submit">Save Details</button>
         </form>
-        <a href="./dashboard.php">back</a>
     </div>
 </body>
 </html>
