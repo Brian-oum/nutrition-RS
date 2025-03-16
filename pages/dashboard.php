@@ -39,15 +39,9 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
                 </a>
             </li>
             <li>
-                <a href="#" onclick="loadContent('change_username.php')" data-tooltip="Change Username">
+                <a href="update_profile.php" onclick="loadContent('change_username.php')" data-tooltip="Change Username">
                     <i class="fas fa-user-edit"></i>
                     <span class="link-text">Change Username</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="loadContent('change_password.php')" data-tooltip="Change Password">
-                    <i class="fas fa-lock"></i>
-                    <span class="link-text">Change Password</span>
                 </a>
             </li>
             <li>
