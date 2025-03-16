@@ -46,17 +46,18 @@ $meal_result = mysqli_query($conn, $meal_query);
     <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         .meal-container {
-            max-width: 700px;
+            width: 90%;
+            max-width: 800px;
             background: #fff;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         h2 {
             color: #333;
-            margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
         p {
@@ -69,6 +70,7 @@ $meal_result = mysqli_query($conn, $meal_query);
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
         table, th, td {
@@ -83,10 +85,21 @@ $meal_result = mysqli_query($conn, $meal_query);
         th {
             background-color: #28a745;
             color: white;
+            text-align: center;
         }
 
         tr:nth-child(even) {
             background-color: #f9f9f9;
+        }
+
+        .premium {
+            background-color: #f8d7da; /* Light red for premium meals */
+            color: #333;
+        }
+
+        .affordable {
+            background-color: #d4edda; /* Light green for affordable meals */
+           
         }
 
         .no-meal {
@@ -96,6 +109,13 @@ $meal_result = mysqli_query($conn, $meal_query);
             border-radius: 5px;
             font-weight: bold;
             margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -116,10 +136,10 @@ $meal_result = mysqli_query($conn, $meal_query);
                 </thead>
                 <tbody>
                     <?php while ($meal = mysqli_fetch_assoc($meal_result)): ?>
-                        <tr>
-                            <td><?php echo $meal['meal_time']; ?></td>
-                            <td><?php echo $meal['meal_name']; ?></td>
-                            <td><?php echo $meal['description']; ?></td>
+                        <tr class="<?php echo ($meal['meal_type'] == 'premium') ? 'premium' : 'affordable'; ?>">
+                            <td><?php echo htmlspecialchars($meal['meal_time']) . ' (' . ucfirst(htmlspecialchars($meal['meal_type'])) . ')'; ?></td>
+                            <td><?php echo htmlspecialchars($meal['meal_name']); ?></td>
+                            <td><?php echo htmlspecialchars($meal['description']); ?></td>
                         </tr>
                     <?php endwhile; ?>
                 </tbody>
