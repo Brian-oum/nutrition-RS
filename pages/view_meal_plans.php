@@ -44,26 +44,109 @@ $meal_result = mysqli_query($conn, $meal_query);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Meal Plans</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <style>
+        .meal-container {
+            width: 90%;
+            max-width: 800px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+            text-transform: uppercase;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #28a745;
+            color: white;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .premium {
+            background-color: #f8d7da; /* Light red for premium meals */
+            color: #333;
+        }
+
+        .affordable {
+            background-color: #d4edda; /* Light green for affordable meals */
+           
+        }
+
+        .no-meal {
+            background: #ffe5e5;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 600px) {
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="meal-container">
         <h2>Meal Plan for <?php echo htmlspecialchars($child['child_name']); ?> (<?php echo $gender; ?>)</h2>
-        <p><strong>Age:</strong> <?php echo $age_interval->y; ?> years, <?php echo $age_interval->m; ?> months</p>
+        <p><strong>Age:</strong> <?php echo $age_interval->y; ?> year(s), <?php echo $age_interval->m; ?> month(s)</p>
         <p><strong>Weight:</strong> <?php echo $weight; ?> kg</p>
 
-        <ul>
-            <?php if (mysqli_num_rows($meal_result) > 0): ?>
-                <?php while ($meal = mysqli_fetch_assoc($meal_result)): ?>
-                    <li>
-                        <strong><?php echo $meal['meal_time']; ?>:</strong> <?php echo $meal['meal_name']; ?>
-                        <p><?php echo $meal['description']; ?></p>
-                    </li>
-                <?php endwhile; ?>
-            <?php else: ?>
-                <li><p>No meal plan found for this weight range. Consult a nutritionist.</p></li>
-            <?php endif; ?>
-        </ul>
-        <a href="dashboard.php">Back to Dashboard</a>
+        <?php if (mysqli_num_rows($meal_result) > 0): ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Meal Time</th>
+                        <th>Meal Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($meal = mysqli_fetch_assoc($meal_result)): ?>
+                        <tr class="<?php echo ($meal['meal_type'] == 'premium') ? 'premium' : 'affordable'; ?>">
+                            <td><?php echo htmlspecialchars($meal['meal_time']) . ' (' . ucfirst(htmlspecialchars($meal['meal_type'])) . ')'; ?></td>
+                            <td><?php echo htmlspecialchars($meal['meal_name']); ?></td>
+                            <td><?php echo htmlspecialchars($meal['description']); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="no-meal">No meal plan found for this weight range. Consult a nutritionist.</p>
+        <?php endif; ?>
     </div>
 </body>
 </html>
