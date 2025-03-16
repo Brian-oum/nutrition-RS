@@ -100,6 +100,8 @@ VALUES
 ('2-3 years', 'Dinner', 'Premium', 'Pasta & Meatballs', 'Whole wheat pasta with meatballs.', 12, 18);
 
 
+--add 3 years
+
 INSERT INTO meal_plans (age_group, meal_time, meal_type, meal_name, description, min_weight, max_weight)
 VALUES 
 ('4-5 years', 'Breakfast', 'Affordable', 'Tea with Wholemeal Bread', 'Mild tea with wholemeal bread.', 14, 25),
