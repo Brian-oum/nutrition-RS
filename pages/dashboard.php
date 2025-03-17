@@ -20,7 +20,6 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
         <h2 class="sidebar-title">Nutrition System</h2>
 
         <ul>
-<<<<<<< HEAD
             <li><a href="details.php" data-tooltip="Add Child Details">
                 <i class="fas fa-child"></i><span class="link-text">Add Child Details</span></a></li>
             <li><a href="view_meal_plans.php" data-tooltip="View Meal Plans">
@@ -45,8 +44,6 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
         </div>
     </main>
 </div>
-
-<!-- Ensure the script loads correctly -->
 <script src="../assets/js/script.js"></script>
 </body>
 </html>
