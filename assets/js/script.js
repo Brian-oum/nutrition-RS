@@ -162,13 +162,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
 // Dynamic Page Loading  
 document.addEventListener("DOMContentLoaded", function () {
-    function loadContent(page, addToHistory = true) {
-        event.preventDefault();
+    const contentDiv = document.getElementById("dynamic-content");
 
-        let contentDiv = document.getElementById("dynamic-content");
+    function loadContent(page, addToHistory = true) {
+        if (!page || page.includes("logout.php")) {
+            // Allow normal navigation for logout
+            window.location.href = page;
+            return;
+        }
+
+        event.preventDefault(); // Prevent full reload
         contentDiv.innerHTML = "<p>Loading...</p>";
 
         fetch(page)
@@ -179,8 +184,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 contentDiv.innerHTML = data;
 
-                // Store current page in sessionStorage
-                sessionStorage.setItem("lastPage", page);
+                // Store the current page in localStorage (Persists after refresh)
+                localStorage.setItem("lastPage", page);
 
                 if (addToHistory) {
                     history.pushState({ page: page }, "", page);
@@ -199,30 +204,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    // Load last page on refresh
-    const lastPage = sessionStorage.getItem("lastPage");
-    if (lastPage) {
+    // Load the last page on refresh
+    const lastPage = localStorage.getItem("lastPage");
+    if (lastPage && lastPage !== "logout.php") {
         loadContent(lastPage, false);
     }
 
     // Attach event listeners to sidebar links
     document.querySelectorAll(".sidebar a").forEach(link => {
         link.addEventListener("click", function (event) {
-            event.preventDefault();
             const page = this.getAttribute("href");
-            if (page) loadContent(page);
+
+            if (page) {
+                loadContent(page);
+                event.preventDefault();
+            }
         });
     });
 });
 
 
-// 🔍 SEARCH FUNCTION (Now globally accessible)
+// Search Child Function
 window.searchChild = function () {
     let query = document.getElementById("searchChild").value;
     let searchResults = document.getElementById("search-results");
 
     if (query.length < 1) {
         searchResults.innerHTML = "";
+        searchResults.style.display = "none"; // Hide if no input
         return;
     }
 
@@ -230,20 +239,35 @@ window.searchChild = function () {
         .then(response => response.json())
         .then(data => {
             searchResults.innerHTML = "";
+
+            if (data.length > 0) {
+                searchResults.style.display = "block"; // Show results
+            } else {
+                searchResults.style.display = "none"; // Hide if no matches
+            }
+
             data.forEach(child => {
                 let div = document.createElement("div");
                 div.classList.add("search-item");
                 div.textContent = child.child_name;
                 div.onclick = function () {
-                    window.loadMealPlan(child.id);  // ✅ FIX: Make sure loadMealPlan is global
+                    window.loadMealPlan(child.id);
+
+                    // 🔹 Delay hiding search results to ensure content loads
+                    setTimeout(() => {
+                        searchResults.style.display = "none";
+                    }, 300);
                 };
                 searchResults.appendChild(div);
             });
         })
-        .catch(error => console.error("Error:", error));
+        .catch(error => {
+            console.error("Error:", error);
+            searchResults.style.display = "none";
+        });
 };
 
-// ✅ MAKE `loadMealPlan` GLOBAL
+// Load Meal Plan Function
 window.loadMealPlan = function (childId) {
     let mealPlanContainer = document.getElementById("meal-plan-container");
 
@@ -252,6 +276,6 @@ window.loadMealPlan = function (childId) {
         .then(data => {
             mealPlanContainer.innerHTML = data;
         })
-        .catch(error => console.error("Error loading meal plan:", error));
+        .catch(error => console.error("Error loading meal plan", error));
 };
 
