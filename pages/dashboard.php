@@ -1,6 +1,10 @@
 <?php
 session_start();
-$username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
+if (!isset($_SESSION["username"])) {
+    header("Location: ../index.php");
+    exit();
+}
+$username = $_SESSION["username"] ?? "Guest";
 ?>
 
 <!DOCTYPE html>
@@ -16,9 +20,8 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
 
 <div class="dashboard-wrapper">
     <!-- Sidebar -->
-    <nav class="sidebar">   
+    <nav class="sidebar">
         <h2 class="sidebar-title">Nutrition System</h2>
-
         <ul>
             <li><a href="details.php" data-tooltip="Add Child Details">
                 <i class="fas fa-child"></i><span class="link-text">Add Child Details</span></a></li>
@@ -30,10 +33,16 @@ $username = isset($_SESSION["username"]) ? $_SESSION["username"] : "Guest";
                 <i class="fas fa-user-edit"></i><span class="link-text">Update Profile</span></a></li>
             <li><a href="logout.php" data-tooltip="Logout">
                 <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span></a></li>
+            <li><a href="details.php" class="load-page"><i class="fas fa-child"></i> Add Child Details</a></li>
+            <li><a href="view_meal_plans.php" class="load-page"><i class="fas fa-utensils"></i> View Meal Plans</a></li>
+            <li><a href="track_progress.php" class="load-page"><i class="fas fa-chart-line"></i> Track Progress</a></li>
+            <li><a href="change_username.php" class="load-page"><i class="fas fa-user-edit"></i> Change Username</a></li>
+            <li><a href="change_password.php" class="load-page"><i class="fas fa-lock"></i> Change Password</a></li>
+            <li><a href="logout.php" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
         </ul>
     </nav>
 
-    <!-- Main Content Area -->
+    <!-- Main Content -->
     <main class="content">
         <h2>Welcome, <?php echo htmlspecialchars($username); ?>!</h2>
         <p>Manage your child's nutrition with personalized recommendations.</p>
