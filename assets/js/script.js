@@ -1,228 +1,68 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Show Login Form
-    function showLogin() {
-        document.getElementById('register-form').style.display = 'none';
-        document.getElementById('login-form').style.display = 'block';
-    }
+// login and register page swapping 
+function showLogin(){
+    document.getElementById('register-form').style.display= 'none';
+    document.getElementById('login-form').style.display = 'block';
+}
 
-    // Show Register Form
-    function showRegister() {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('register-form').style.display = 'block';
-    }
+function showRegister(){
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('register-form').style.display = 'block';
+}
 
-    // Prevent form resubmission on page refresh
-    if (window.history.replaceState) {
-        window.history.replaceState(null, null, window.location.href);
-    }
-
-    // Email Verification
-    const urlParams = new URLSearchParams(window.location.search);
-    const email = urlParams.get("email");
-    const userEmailInput = document.getElementById("userEmail");
-
-    if (userEmailInput) {
-        userEmailInput.value = email ? email : "";
-    }
-
-    // OTP Sending
-    const sendOTPButton = document.getElementById("sendOTP");
-    if (sendOTPButton) {
-        sendOTPButton.addEventListener("click", function () {
-            if (!email) {
-                showMessage("Invalid email!", "error");
-                return;
-            }
-
-            const otp = Math.floor(1000 + Math.random() * 9000);
-            sessionStorage.setItem("otp", otp);
-
-            emailjs.init("L5PzYj2MAUuZ4E9f4");
-            emailjs.send("service_07esa9d", "template_h2q7mxr", {
-                to_email: email,
-                otp_code: otp
-            }).then(function () {
-                showMessage("OTP sent successfully!", "success");
-                sendOTPButton.textContent = "Redirecting...";
-                sendOTPButton.disabled = true;
-
-                setTimeout(() => {
-                    window.location.href = "otp_verification.html";
-                }, 2000);
-            }).catch(function () {
-                showMessage("Error sending OTP!", "error");
-            });
-        });
-    }
-
-    // OTP Verification
-    const verifyOTPButton = document.getElementById("verifyOTP");
-    if (verifyOTPButton) {
-        document.getElementById("emailMessage").textContent = `Please enter the OTP sent to "${sessionStorage.getItem("userEmail")}"`;
-
-        startOTPTimer();
-
-        verifyOTPButton.addEventListener("click", function () {
-            const enteredOTP = document.getElementById("otpInput").value;
-            const storedOTP = sessionStorage.getItem("otp");
-            const responseMessage = document.getElementById("responseMessage");
-
-            if (enteredOTP === storedOTP) {
-                fetch('./auth.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `verify_otp=1`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === "success") {
-                        responseMessage.textContent = "Registration successful!";
-                        responseMessage.className = "success";
-
-                        verifyOTPButton.textContent = "Redirecting...";
-                        verifyOTPButton.disabled = true;
-
-                        setTimeout(() => {
-                            window.location.href = "../index.php";
-                        }, 2000);
-                    } else {
-                        responseMessage.textContent = data.message;
-                        responseMessage.className = "error";
-                    }
-                })
-                .catch(() => {
-                    responseMessage.textContent = "An error occurred. Please try again.";
-                    responseMessage.className = "error";
-                });
-            } else {
-                responseMessage.textContent = "Invalid OTP!";
-                responseMessage.className = "error";
-            }
-        });
-
-        document.getElementById("resendOTP").addEventListener("click", resendOTP);
-    }
-
-    // OTP Timer
-    function startOTPTimer() {
-        let timeLeft = 60;
-        const expireSpan = document.getElementById("expire");
-        const otpInput = document.getElementById("otpInput");
-        const verifyButton = document.getElementById("verifyOTP");
-        const resendButton = document.getElementById("resendOTP");
-        const responseMessage = document.getElementById("responseMessage");
-
-        resendButton.style.display = "none";
-        otpInput.disabled = false;
-        verifyButton.disabled = false;
-
-        const countdown = setInterval(() => {
-            timeLeft--;
-            expireSpan.textContent = timeLeft;
-
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                responseMessage.textContent = "OTP expired! Please request a new one.";
-                responseMessage.className = "error";
-                otpInput.disabled = true;
-                verifyButton.disabled = true;
-                resendButton.style.display = "block";
-            }
-        }, 1000);
-    }
-
-    function resendOTP() {
-        const email = sessionStorage.getItem("userEmail");
-        const responseMessage = document.getElementById("responseMessage");
-        const resendButton = document.getElementById("resendOTP");
-
-        resendButton.disabled = true;
-        resendButton.textContent = "Resending...";
-
-        setTimeout(() => {
-            const newOTP = Math.floor(1000 + Math.random() * 9000);
-            sessionStorage.setItem("otp", newOTP);
-
-            emailjs.init("L5PzYj2MAUuZ4E9f4");
-            emailjs.send("service_07esa9d", "template_h2q7mxr", {
-                to_email: email,
-                otp_code: newOTP
-            }).then(() => {
-                responseMessage.textContent = "New OTP sent successfully!";
-                responseMessage.className = "success";
-                resendButton.style.display = "none";
-                startOTPTimer();
-            }).catch(() => {
-                responseMessage.textContent = "Error sending OTP. Please try again.";
-                responseMessage.className = "error";
-                resendButton.disabled = false;
-                resendButton.textContent = "Resend OTP";
-            });
-        }, 5000);
+document.addEventListener("DOMContentLoaded", function(){
+    let activeForm = sessionStorage.getItem("activeForm") || "login";
+    if (activeForm === "register"){
+        showRegister();
+    } else {
+        showLogin();
     }
 });
 
-// Dynamic Page Loading  
+function toggleForm(form){
+    sessionStorage.setItem("activeForm", form);
+    if ( form === "register"){
+        showRegister();
+    } else {
+        showLogin();
+    }
+}
+
+// dynamic page loading
 document.addEventListener("DOMContentLoaded", function () {
-    const contentDiv = document.getElementById("dynamic-content");
+    // Sidebar Navigation without Reload
+    document.querySelectorAll(".load-page").forEach(link => {
+        link.addEventListener("click", function (e) {
+            e.preventDefault();
+            let pageUrl = this.getAttribute("href");
 
-    function loadContent(page, addToHistory = true) {
-        if (!page || page.includes("logout.php")) {
-            // Allow normal navigation for logout
-            window.location.href = page;
-            return;
-        }
-
-        event.preventDefault(); // Prevent full reload
-        contentDiv.innerHTML = "<p>Loading...</p>";
-
-        fetch(page)
-            .then(response => {
-                if (!response.ok) throw new Error("Failed to load content.");
-                return response.text();
-            })
-            .then(data => {
-                contentDiv.innerHTML = data;
-
-                // Store the current page in localStorage (Persists after refresh)
-                localStorage.setItem("lastPage", page);
-
-                if (addToHistory) {
-                    history.pushState({ page: page }, "", page);
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                contentDiv.innerHTML = "<p>Failed to load content.</p>";
-            });
-    }
-
-    // Handle browser back/forward buttons
-    window.onpopstate = function (event) {
-        if (event.state && event.state.page) {
-            loadContent(event.state.page, false);
-        }
-    };
-
-    // Load the last page on refresh
-    const lastPage = localStorage.getItem("lastPage");
-    if (lastPage && lastPage !== "logout.php") {
-        loadContent(lastPage, false);
-    }
-
-    // Attach event listeners to sidebar links
-    document.querySelectorAll(".sidebar a").forEach(link => {
-        link.addEventListener("click", function (event) {
-            const page = this.getAttribute("href");
-
-            if (page) {
-                loadContent(page);
-                event.preventDefault();
-            }
+            fetch(pageUrl)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("dynamic-content").innerHTML = data;
+                    history.pushState({ page: pageUrl }, "", "?page=" + pageUrl);
+                })
+                .catch(error => console.error("Error loading page:", error));
         });
     });
-});
 
+    // Preserve State on Refresh
+    window.addEventListener("popstate", function (event) {
+        if (event.state && event.state.page) {
+            fetch(event.state.page)
+                .then(response => response.text())
+                .then(data => document.getElementById("dynamic-content").innerHTML = data)
+                .catch(error => console.error("Error restoring page:", error));
+        }
+    });
+
+    // Logout Handling
+    document.getElementById("logout").addEventListener("click", function (e) {
+        e.preventDefault();
+        fetch("logout.php")
+            .then(() => window.location.href = "../index.php")
+            .catch(error => console.error("Logout error:", error));
+    });
+});
 
 // Search Child Function
 window.searchChild = function () {
@@ -231,7 +71,7 @@ window.searchChild = function () {
 
     if (query.length < 1) {
         searchResults.innerHTML = "";
-        searchResults.style.display = "none"; // Hide if no input
+        searchResults.style.display = "none";
         return;
     }
 
@@ -239,12 +79,7 @@ window.searchChild = function () {
         .then(response => response.json())
         .then(data => {
             searchResults.innerHTML = "";
-
-            if (data.length > 0) {
-                searchResults.style.display = "block"; // Show results
-            } else {
-                searchResults.style.display = "none"; // Hide if no matches
-            }
+            searchResults.style.display = data.length > 0 ? "block" : "none";
 
             data.forEach(child => {
                 let div = document.createElement("div");
@@ -252,11 +87,7 @@ window.searchChild = function () {
                 div.textContent = child.child_name;
                 div.onclick = function () {
                     window.loadMealPlan(child.id);
-
-                    // 🔹 Delay hiding search results to ensure content loads
-                    setTimeout(() => {
-                        searchResults.style.display = "none";
-                    }, 300);
+                    setTimeout(() => searchResults.style.display = "none", 300);
                 };
                 searchResults.appendChild(div);
             });
@@ -273,9 +104,6 @@ window.loadMealPlan = function (childId) {
 
     fetch(`./load_meal_plan.php?id=${childId}`)
         .then(response => response.text())
-        .then(data => {
-            mealPlanContainer.innerHTML = data;
-        })
-        .catch(error => console.error("Error loading meal plan", error));
+        .then(data => mealPlanContainer.innerHTML = data)
+        .catch(error => console.error("Error loading meal plan:", error));
 };
-

@@ -1,17 +1,19 @@
 <?php
 include '../config/db.php';
 
-if (isset($_GET['query'])) {
-    $search = $conn->real_escape_string($_GET['query']);
-    
-    $sql = "SELECT id, child_name FROM children WHERE child_name LIKE '%$search%' LIMIT 10";
-    $result = $conn->query($sql);
+if (isset($_GET['query'])){
+    $search = "%" . $_GET['query'] . "%";
 
-    $children = [];
-    while ($row = $result->fetch_assoc()) {
-        $children[] = $row;
-    }
+    $sql = "SELECT id, child_name FROM children where child_name LIKE ? LIMIT 10";
+    $stmt = $conn-> prepare($sql);
+    $stmt->bind_param("s", $search);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $children = $result->fetch_all(MYSQLI_ASSOC);
 
     echo json_encode($children);
+
+    $stmt->close(); 
 }
 ?>
