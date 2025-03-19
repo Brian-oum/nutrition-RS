@@ -11,12 +11,11 @@
     <div class="container">
         <h2>Nutrition Recommender System</h2>
 
-        <!-- Display Session Message -->
         <?php
         session_start();
         if (isset($_SESSION['message'])) {
             echo "<div class='alert'>" . $_SESSION['message'] . "</div>";
-            unset($_SESSION['message']); // Clear message after displaying
+            unset($_SESSION['message']);
         }
         ?>
 
@@ -45,7 +44,6 @@
         </div>
     </div>
     </div>
-
     <script src="./assets/js/script.js"></script>
 </body>
 </html>
