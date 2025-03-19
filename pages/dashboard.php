@@ -23,16 +23,6 @@ $username = $_SESSION["username"] ?? "Guest";
     <nav class="sidebar">
         <h2 class="sidebar-title">Nutrition System</h2>
         <ul>
-            <li><a href="details.php" data-tooltip="Add Child Details">
-                <i class="fas fa-child"></i><span class="link-text">Add Child Details</span></a></li>
-            <li><a href="view_meal_plans.php" data-tooltip="View Meal Plans">
-                <i class="fas fa-utensils"></i><span class="link-text">View Meal Plans</span></a></li>
-            <li><a href="track_progress.php" data-tooltip="Track Progress">
-                <i class="fas fa-chart-line"></i><span class="link-text">Track Progress</span></a></li>
-            <li><a href="update_profile.php" data-tooltip="Update Profile">
-                <i class="fas fa-user-edit"></i><span class="link-text">Update Profile</span></a></li>
-            <li><a href="logout.php" data-tooltip="Logout">
-                <i class="fas fa-sign-out-alt"></i><span class="link-text">Logout</span></a></li>
             <li><a href="details.php" class="load-page"><i class="fas fa-child"></i> Add Child Details</a></li>
             <li><a href="view_meal_plans.php" class="load-page"><i class="fas fa-utensils"></i> View Meal Plans</a></li>
             <li><a href="track_progress.php" class="load-page"><i class="fas fa-chart-line"></i> Track Progress</a></li>
