@@ -7,239 +7,150 @@ if ($childId <= 0) {
     die("Invalid child ID");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Child Nutrition Progress</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Track Child Progress</title>
+    <link rel="stylesheet" href="../assets/css/track.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Main Progress Container */
         .progress-container {
-            width: 100%;
-            background-color: #e9ecef;
-            border-radius: 0.25rem;
-            margin: 1rem 0;
+            width: 80%;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
-        .progress-bar {
-            height: 1.5rem;
-            background-color: #28a745;
-            border-radius: 0.25rem;
-            transition: width 0.6s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
+        .progress-container h2 {
+            font-size: 26px;
             font-weight: bold;
-        }
-        .bmi-scale {
-            width: 100%;
-            height: 20px;
-            background: linear-gradient(to right, #3498db, #2ecc71, #f1c40f, #e67e22, #e74c3c);
-            border-radius: 10px;
-            position: relative;
-            margin: 10px 0;
-        }
-        .bmi-pointer {
-            position: absolute;
-            top: -5px;
-            width: 2px;
-            height: 30px;
-            background: #000;
-            transform: translateX(-50%);
-        }
-        .card {
+            color: #333;
             margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .positive {
-            color: #28a745;
+        .search-box {
+            margin-bottom: 30px;
         }
-        .negative {
-            color: #dc3545;
+        .search-box label {
+            font-size: 18px;
+            color: #333;
+            margin-right: 10px;
+        }
+        .search-box select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            width: 60%;
+            cursor: pointer;
+            transition: border 0.3s ease;
+        }
+        .search-box select:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        .chart-container {
+            margin-top: 40px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 30px;
+            color: #4CAF50;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 8px 16px;
+            border: 2px solid #4CAF50;
+            border-radius: 30px;
+            transition: 0.3s;
+        }
+        .back-btn:hover {
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <div class="container py-4">
-        <h1 class="mb-4">Child Nutrition Progress</h1>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 id="childName">Loading...</h5>
-                    </div>
-                    <div class="card-body">
-                        <p><strong>Age:</strong> <span id="childAge">-</span></p>
-                        <p><strong>Gender:</strong> <span id="childGender">-</span></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Nutrition Progress</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="weightProgressCard" class="mb-4">
-                            <h6>Weight Progress</h6>
-                            <p>Current: <span id="currentWeight">-</span> kg</p>
-                            <p>Target: <span id="targetWeight">-</span> kg</p>
-                            <div class="progress-container">
-                                <div id="weightProgressBar" class="progress-bar" style="width: 0%">0%</div>
-                            </div>
-                            <p id="weightComparison" class="mt-1"></p>
-                        </div>
-                        
-                        <div id="heightProgressCard" class="mb-4">
-                            <h6>Height Progress</h6>
-                            <p>Current: <span id="currentHeight">-</span> cm</p>
-                            <p>Target: <span id="targetHeight">-</span> cm</p>
-                            <div class="progress-container">
-                                <div id="heightProgressBar" class="progress-bar" style="width: 0%">0%</div>
-                            </div>
-                            <p id="heightComparison" class="mt-1"></p>
-                        </div>
-                        
-                        <div id="bmiCard">
-                            <h6>BMI Status</h6>
-                            <div class="bmi-scale">
-                                <div id="bmiPointer" class="bmi-pointer"></div>
-                            </div>
-                            <p><strong>BMI:</strong> <span id="bmiValue">-</span></p>
-                            <p id="bmiCategory" class="fw-bold"></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+
+<div class="progress-container">
+    <h2>Track Child Progress</h2>
+
+    <div class="search-box">
+        <label for="child_id">Select Child:</label>
+        <select id="child_id" name="child_id">
+            <option value="">-- Select a Child --</option>
+            <?php
+            $sql = "SELECT id, child_name FROM children";
+            $result = $conn->query($sql);
+            while ($child = $result->fetch_assoc()) {
+                echo "<option value='{$child['id']}'>{$child['child_name']}</option>";
+            }
+            ?>
+        </select>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const childId = <?php echo $childId; ?>;
-            fetchChildProgress(childId);
-            
-            // Handle form submission
-            document.getElementById('measurementForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                addNewMeasurement(childId);
-            });
-        });
+    <div class="chart-container">
+        <canvas id="progressChart"></canvas>
+    </div>
+    <a href="../pages/dashboard.php" class="back-btn">Back To Dashboard</a>
+</div>
 
-        async function fetchChildProgress(childId) {
-            try {
-                const response = await fetch(`api.php?action=get_child_progress&child_id=${childId}`);
-                const data = await response.json();
-                
-                if (response.ok) {
-                    updateChildProfile(data);
-                    updateProgressBars(data);
-                    updateBMI(data);
-                } else {
-                    console.error('Error:', data.error);
-                    alert('Failed to load child progress: ' + data.error);
-                }
-            } catch (error) {
-                console.error('Network error:', error);
-                alert('Network error occurred. Please try again.');
+<script>
+document.getElementById('child_id').addEventListener('change', function() {
+    let childId = this.value;
+    if (childId) {
+        fetch(`fetch_progress.php?child_id=${childId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+                return;
             }
+            updateGraph(data.child_name, data.progress);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+});
+
+let ctx = document.getElementById('progressChart').getContext('2d');
+let progressChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Weight (kg)',
+            data: [],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1,
+            barThickness: 30,
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: { title: { display: true, text: 'Schedule' } },
+            y: { title: { display: true, text: 'Weight (kg)' }, beginAtZero: true }
         }
+    }
+});
 
-        function updateChildProfile(data) {
-            document.getElementById('childName').textContent = data.childInfo.name;
-            document.getElementById('childGender').textContent = data.childInfo.gender.charAt(0).toUpperCase() + data.childInfo.gender.slice(1);
-            
-            // Format age display
-            let ageDisplay;
-            if (data.ageInMonths < 24) {
-                ageDisplay = `${data.ageInMonths} months`;
-            } else {
-                const years = Math.floor(data.ageInMonths / 12);
-                const months = data.ageInMonths % 12;
-                ageDisplay = `${years} years`;
-                if (months > 0) ageDisplay += ` ${months} months`;
-            }
-            document.getElementById('childAge').textContent = ageDisplay;
-        }
+function updateGraph(childName, progressData) {
+    let weights = progressData.map(p => p.weight);
+    let schedules = progressData.map(p => p.schedule);
 
-        function updateProgressBars(data) {
-            // Update weight progress
-            if (data.currentMetrics && data.goals && data.goals.target_weight) {
-                document.getElementById('currentWeight').textContent = data.currentMetrics.weight;
-                document.getElementById('targetWeight').textContent = data.goals.target_weight;
-                
-                const weightProgress = Math.min(100, (data.currentMetrics.weight / data.goals.target_weight * 100));
-                const weightProgressBar = document.getElementById('weightProgressBar');
-                weightProgressBar.style.width = `${weightProgress}%`;
-                weightProgressBar.textContent = `${Math.round(weightProgress)}%`;
-                
-                // Show comparison if previous data exists
-                if (data.previousMetrics) {
-                    const weightDiff = data.currentMetrics.weight - data.previousMetrics.weight;
-                    const comparisonElement = document.getElementById('weightComparison');
-                    comparisonElement.textContent = `${weightDiff >= 0 ? '+' : ''}${weightDiff.toFixed(1)} kg from last measurement`;
-                    comparisonElement.className = weightDiff >= 0 ? 'positive' : 'negative';
-                }
-            }
-            
-            // Update height progress
-            if (data.currentMetrics && data.goals && data.goals.target_height) {
-                document.getElementById('currentHeight').textContent = data.currentMetrics.height;
-                document.getElementById('targetHeight').textContent = data.goals.target_height;
-                
-                const heightProgress = Math.min(100, (data.currentMetrics.height / data.goals.target_height * 100));
-                const heightProgressBar = document.getElementById('heightProgressBar');
-                heightProgressBar.style.width = `${heightProgress}%`;
-                heightProgressBar.textContent = `${Math.round(heightProgress)}%`;
-                
-                // Show comparison if previous data exists
-                if (data.previousMetrics) {
-                    const heightDiff = data.currentMetrics.height - data.previousMetrics.height;
-                    const comparisonElement = document.getElementById('heightComparison');
-                    comparisonElement.textContent = `${heightDiff >= 0 ? '+' : ''}${heightDiff.toFixed(1)} cm from last measurement`;
-                    comparisonElement.className = heightDiff >= 0 ? 'positive' : 'negative';
-                }
-            }
-        }
+    progressChart.data.labels = schedules;
+    progressChart.data.datasets[0].data = weights;
+    progressChart.options.plugins = { title: { display: true, text: `Weight Progress for ${childName}` } };
+    progressChart.update();
+}
+</script>
 
-        function updateBMI(data) {
-            if (data.bmi) {
-                document.getElementById('bmiValue').textContent = data.bmi;
-                
-                // Position BMI pointer on scale (assuming scale represents BMI 10-30)
-                const bmiPointer = document.getElementById('bmiPointer');
-                const bmiPercentage = Math.min(100, Math.max(0, (data.bmi - 10) / 20 * 100));
-                bmiPointer.style.left = `${bmiPercentage}%`;
-                
-                // Determine BMI category
-                const bmiCategoryElement = document.getElementById('bmiCategory');
-                let category = '';
-                let categoryClass = '';
-                
-                if (data.bmi < 18.5) {
-                    category = 'Underweight';
-                    categoryClass = 'text-primary';
-                } else if (data.bmi < 25) {
-                    category = 'Normal weight';
-                    categoryClass = 'text-success';
-                } else if (data.bmi < 30) {
-                    category = 'Overweight';
-                    categoryClass = 'text-warning';
-                } else {
-                    category = 'Obese';
-                    categoryClass = 'text-danger';
-                }
-                
-                bmiCategoryElement.textContent = category;
-                bmiCategoryElement.className = `fw-bold ${categoryClass}`;
-            }
-        }
-
-    </script>
 </body>
 </html>
