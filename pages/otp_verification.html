@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification</title>
     <link rel="stylesheet" href="../assets/css/style.css">
-    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/fetch.js"></script>
 </head>
 <body class="otp-body">
     <div class="otp-container">
@@ -19,5 +19,82 @@
         <button id="resendOTP" style="display: none;">Resend OTP</button>
         <a href="../index.php" class="back-btn">Back To Login</a>
     </div>
+    <script>
+        // Get email from sessionStorage and display it in the message
+        const email = sessionStorage.getItem('userEmail');
+        if (email) {
+            document.getElementById('emailMessage').textContent = `Please enter the OTP sent to "${email}"`;
+        }
+
+        // OTP Timer
+        function startOTPTimer() {
+            let timeLeft = 60;
+            const expireSpan = document.getElementById("expire");
+            const otpInput = document.getElementById("otpInput");
+            const verifyButton = document.getElementById("verifyOTP");
+            const resendButton = document.getElementById("resendOTP");
+            const responseMessage = document.getElementById("responseMessage");
+
+            resendButton.style.display = "none";
+            otpInput.disabled = false;
+            verifyButton.disabled = false;
+
+            const countdown = setInterval(() => {
+                timeLeft--;
+                expireSpan.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    responseMessage.textContent = "OTP expired! Please request a new one.";
+                    responseMessage.className = "error";
+                    otpInput.disabled = true;
+                    verifyButton.disabled = true;
+                    resendButton.style.display = "block";
+                }
+            }, 1000);
+        }
+
+        // OTP Verification
+        const verifyOTPButton = document.getElementById("verifyOTP");
+        if (verifyOTPButton) {
+            verifyOTPButton.addEventListener("click", function () {
+                const enteredOTP = document.getElementById("otpInput").value;
+                const storedOTP = sessionStorage.getItem("otp");
+                const responseMessage = document.getElementById("responseMessage");
+
+                if (enteredOTP === storedOTP) {
+                    fetch('./auth.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `verify_otp=1`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            responseMessage.textContent = "Registration successful!";
+                            responseMessage.className = "success";
+
+                            verifyOTPButton.textContent = "Redirecting...";
+                            verifyOTPButton.disabled = true;
+
+                            setTimeout(() => {
+                                window.location.href = "../index.php";
+                            }, 2000);
+                        } else {
+                            responseMessage.textContent = data.message;
+                            responseMessage.className = "error";
+                        }
+                    })
+                    .catch(() => {
+                        responseMessage.textContent = "An error occurred. Please try again.";
+                        responseMessage.className = "error";
+                    });
+                } else {
+                    responseMessage.textContent = "Invalid OTP!";
+                    responseMessage.className = "error";
+                }
+            });
+        }
+    </script>
 </body>
 </html>

@@ -22,6 +22,16 @@ CREATE TABLE children (
     dietary_restrictions TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE child_progress (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    child_id INT,
+    weight DECIMAL(5,2),
+    height DECIMAL(5,2),
+    schedule VARCHAR(50),
+    dietary_restrictions TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (child_id) REFERENCES children(id) ON DELETE CASCADE
+);
 
 CREATE TABLE meal_plans (
     id INT AUTO_INCREMENT PRIMARY KEY,

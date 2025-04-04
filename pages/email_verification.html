@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Verification</title>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/login.js"></script>
     <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-
 <body>
     <div class="email-body">
         <div class="email-container">
@@ -19,5 +18,14 @@
             <a href="../index.php" class="back-btn">Back To Login</a>
         </div>
     </div>
+    <script>
+        // Get email from the query string and populate the email input field
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if (email) {
+            document.getElementById('userEmail').value = email;
+            sessionStorage.setItem('userEmail', email); // Store email for OTP process
+        }
+    </script>
 </body>
 </html>
