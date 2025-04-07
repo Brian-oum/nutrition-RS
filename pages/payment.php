@@ -1,12 +1,6 @@
 <?php
 session_start();
-require 'subscription_check.php';
 
-// Redirect if user is already subscribed
-if (isset($_SESSION['user_id']) && hasActiveSubscription($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
-    exit;
-}
 ?>
 
 <!DOCTYPE html>
