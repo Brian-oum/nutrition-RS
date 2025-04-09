@@ -5,6 +5,7 @@ if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,6 @@ if (!$conn) {
             text-align: center;
         }
 
-        /* Heading */
         .progress-container h2 {
             font-size: 26px;
             font-weight: bold;
@@ -33,11 +33,9 @@ if (!$conn) {
             margin-bottom: 20px;
         }
 
-        /* Search Box Styling */
         .search-box {
             margin-bottom: 30px;
         }
-
         .search-box label {
             font-size: 18px;
             color: #333;
@@ -54,18 +52,14 @@ if (!$conn) {
             cursor: pointer;
             transition: border 0.3s ease;
         }
-
         .search-box select:focus {
             border-color: #4CAF50;
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
         }
 
-        /* Chart Area Styling */
         .chart-container {
             margin-top: 40px;
         }
-
-        /* Back Button Styling */
         .back-btn {
             display: inline-block;
             margin-top: 30px;
@@ -77,37 +71,19 @@ if (!$conn) {
             border-radius: 30px;
             transition: 0.3s;
         }
-
         .back-btn:hover {
             background-color: #4CAF50;
             color: white;
             text-decoration: none;
-        }
 
-        /* Chart.js Styling */
-        .chart-container canvas {
-            max-width: 100%;
-            height: auto;
-        }
-
-        /* Media Queries for Smaller Devices */
-        @media (max-width: 600px) {
-            .progress-container {
-                width: 90%;
-                padding: 15px;
-            }
-
-            .search-box select {
-                width: 80%;
-            }
         }
     </style>
 </head>
 <body>
+
 <div class="progress-container">
     <h2>Track Child Progress</h2>
 
-    <!-- Child Selection -->
     <div class="search-box">
         <label for="child_id">Select Child:</label>
         <select id="child_id" name="child_id">
@@ -122,7 +98,6 @@ if (!$conn) {
         </select>
     </div>
 
-    <!-- Chart Area -->
     <div class="chart-container">
         <canvas id="progressChart"></canvas>
     </div>
@@ -136,7 +111,6 @@ document.getElementById('child_id').addEventListener('change', function() {
         fetch(`fetch_progress.php?child_id=${childId}`)
         .then(response => response.json())
         .then(data => {
-            console.log("Received Data: ", data);  // Debugging
             if (data.error) {
                 alert(data.error);
                 return;
@@ -146,79 +120,38 @@ document.getElementById('child_id').addEventListener('change', function() {
         .catch(error => console.error('Error:', error));
     }
 });
-
-// Chart.js Graph
 let ctx = document.getElementById('progressChart').getContext('2d');
 let progressChart = new Chart(ctx, {
-    type: 'bar', // Bar chart
+    type: 'bar',
     data: {
-        labels: [], // X-axis (Schedules)
+        labels: [],
         datasets: [{
             label: 'Weight (kg)',
-            data: [], // Y-axis (Weight)
-            backgroundColor: 'rgba(54, 162, 235, 0.6)', // Light blue color
-            borderColor: 'rgba(54, 162, 235, 1)', // Darker blue for borders
+            data: [],
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
-            barThickness: 30, // Adjust bar thickness
-            hoverBackgroundColor: 'rgba(54, 162, 235, 1)', // Bright color when hovering
-            hoverBorderColor: 'rgba(54, 162, 235, 1)', // Bright border on hover
+            barThickness: 30,
         }]
     },
     options: {
         responsive: true,
-        indexAxis: 'x', // Switch axes: X is for schedule, Y is for weight
         scales: {
-            x: { 
-                title: { display: true, text: 'Schedule' },
-                ticks: {
-                    autoSkip: false, // Ensure all schedules appear
-                    reverse: true, // Start from 2-Weeks at the left
-                    font: {
-                        size: 14,
-                        weight: 'bold',
-                        family: 'Arial, sans-serif',
-                        color: '#333'
-                    }
-                }
-            },
-            y: { 
-                title: { display: true, text: 'Weight (kg)' },
-                ticks: {
-                    font: {
-                        size: 14,
-                        weight: 'bold',
-                        family: 'Arial, sans-serif',
-                        color: '#333'
-                    },
-                    beginAtZero: true,
-                }
-            }
+            x: { title: { display: true, text: 'Schedule' } },
+            y: { title: { display: true, text: 'Weight (kg)' }, beginAtZero: true }
         }
     }
 });
 
-// Update the graph with new data
 function updateGraph(childName, progressData) {
     let weights = progressData.map(p => p.weight);
     let schedules = progressData.map(p => p.schedule);
 
-    // Ensure that progress data is sorted correctly by schedule
-    let schedule_order = [
-        '2-Weeks', '6-Weeks', '10-Weeks', '14-Weeks', '1-Year', '1.25-Years', '1.5-Years',
-        '2-Years', '2.5-Years', '3-Years', '3.5-Years', '4-Years', '4.5-Years', '5-Years'
-    ];
-
-    progressData.sort((a, b) => schedule_order.indexOf(a.schedule) - schedule_order.indexOf(b.schedule));
-
-    // Log data to ensure it is correct
-    console.log("Updated Progress Data: ", progressData);
-
-    progressChart.data.labels = schedules; // X-axis (Schedule)
-    progressChart.data.datasets[0].data = weights; // Y-axis (Weight)
+    progressChart.data.labels = schedules;
+    progressChart.data.datasets[0].data = weights;
     progressChart.options.plugins = { title: { display: true, text: `Weight Progress for ${childName}` } };
     progressChart.update();
 }
 </script>
-
 </body>
 </html>
