@@ -1,10 +1,8 @@
 <?php
-require_once '../config/db.php';
+include '../config/db.php';
 
-// In a real application, you would have proper authentication
-$childId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-if ($childId <= 0) {
-    die("Invalid child ID");
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
 }
 ?>
 
@@ -27,12 +25,14 @@ if ($childId <= 0) {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+
         .progress-container h2 {
             font-size: 26px;
             font-weight: bold;
             color: #333;
             margin-bottom: 20px;
         }
+
         .search-box {
             margin-bottom: 30px;
         }
@@ -41,6 +41,7 @@ if ($childId <= 0) {
             color: #333;
             margin-right: 10px;
         }
+
         .search-box select {
             padding: 10px;
             font-size: 16px;
@@ -55,6 +56,7 @@ if ($childId <= 0) {
             border-color: #4CAF50;
             box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
         }
+
         .chart-container {
             margin-top: 40px;
         }
@@ -73,6 +75,7 @@ if ($childId <= 0) {
             background-color: #4CAF50;
             color: white;
             text-decoration: none;
+
         }
     </style>
 </head>
@@ -117,7 +120,6 @@ document.getElementById('child_id').addEventListener('change', function() {
         .catch(error => console.error('Error:', error));
     }
 });
-
 let ctx = document.getElementById('progressChart').getContext('2d');
 let progressChart = new Chart(ctx, {
     type: 'bar',
@@ -151,6 +153,5 @@ function updateGraph(childName, progressData) {
     progressChart.update();
 }
 </script>
-
 </body>
 </html>
