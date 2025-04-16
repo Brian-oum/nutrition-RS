@@ -1,5 +1,5 @@
 <?php
-session_start();
+/*session_start();
 include('../config/db.php');
 
 // Check if the form is submitted
@@ -51,125 +51,59 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $message = "Caregiver not found!";
     }
-}
+}*/
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Password</title>
+    <link rel="stylesheet" href="../assets/css/style.css" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <style>
-        /* Basic styling for the page */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            font-size: 16px;
-            color: #555;
-        }
-
-        input[type="password"], input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-
-        input[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        .message {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4CAF50;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 8px 16px;
-            border: 2px solid #4CAF50;
-            border-radius: 30px;
-            text-align: center;
-        }
-
-        .back-btn:hover {
-            background-color: #4CAF50;
-            color: white;
-        }
+        
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Update Your Password</h1>
-    <?php if (isset($message)): ?>
-        <div class="message"><?php echo $message; ?></div>
-    <?php endif; ?>
+<?php include '../includes/header.php'; ?>
 
-    <form action="" method="POST">
-        <div class="form-group">
-            <label for="old_password">Old Password:</label>
-            <input type="password" id="old_password" name="old_password" required placeholder="Enter your old password">
+<div class="dash-container">
+    <?php include '../includes/sidebar.php'; ?>
+
+    <main class="content">
+        <h2>Update Your Password</h2>
+
+        <?php if (isset($message)): ?>
+            <div class="alert-message"><?php echo $message; ?></div>
+        <?php endif; ?>
+
+        <div class="form-wrapper">
+            <form action="" method="POST">
+                <div class="form-group">
+                    <label for="old_password"><i class="fas fa-lock"></i> Old Password:</label>
+                    <input type="password" id="old_password" name="old_password" required placeholder="Enter your old password">
+                </div>
+
+                <div class="form-group">
+                    <label for="new_password"><i class="fas fa-lock-open"></i> New Password:</label>
+                    <input type="password" id="new_password" name="new_password" required placeholder="Enter your new password">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password"><i class="fas fa-lock"></i> Confirm New Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your new password">
+                </div>
+
+                <button type="submit" class="btn-primary">Update Password</button>
+            </form>
         </div>
-
-        <div class="form-group">
-            <label for="new_password">New Password:</label>
-            <input type="password" id="new_password" name="new_password" required placeholder="Enter your new password">
-        </div>
-
-        <div class="form-group">
-            <label for="confirm_password">Confirm New Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" required placeholder="Confirm your new password">
-        </div>
-
-        <input type="submit" value="Update Password">
-    </form>
-
-    <a href="../pages/dashboard.php" class="back-btn">Back To Dashboard</a>
+    </main>
 </div>
+
+<?php include '../includes/footer.php'; ?>
 
 </body>
 </html>
