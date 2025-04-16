@@ -1,10 +1,10 @@
 <?php
-//session_start();
-//if (!isset($_SESSION["username"])) {
-//    header("Location: dashboard.php");
-//    exit();
-//}
-//$username = $_SESSION["username"] ?? "Guest";
+session_start();
+if (!isset($_SESSION["username"])) {
+    header("Location: dashboard.php");
+    exit();
+}
+$username = $_SESSION["username"] ?? "Guest";
 
 date_default_timezone_set("Africa/Nairobi");
 $hour = date("H");

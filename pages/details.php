@@ -1,5 +1,4 @@
 <?php
-/*
 session_start();
 include("../config/db.php");
 
@@ -38,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $conn->close();
 }
-*/
 ?>
 
 <!DOCTYPE html>

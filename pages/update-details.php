@@ -1,5 +1,5 @@
 <?php
-/*include '../config/db.php';
+include '../config/db.php';
 
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         echo "<script>alert('❌ Child not found. Please enter a valid name.'); window.location='dashboard.php';</script>";
     }
-}*/
+}
 ?>
 
 <!DOCTYPE html>

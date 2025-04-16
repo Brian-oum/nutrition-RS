@@ -39,7 +39,7 @@
           <input class="form-input" type="password" name="password" placeholder="Enter Password" required />
           <button class="form-button" type="submit" name="login">Login</button>
         </form>
-        <p><a href="./pages/dashboard.php">Forgot Password?</a></p>
+        <p><a href="#">Forgot Password?</a></p>
         <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
       </div>
     </div>

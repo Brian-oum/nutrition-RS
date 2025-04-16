@@ -128,3 +128,13 @@ VALUES
 
 ('4-5 years', 'Dinner', 'Affordable', 'Rice & Stewed Green Grams', 'Rice with green grams (Ndengu).', 14, 25),
 ('4-5 years', 'Dinner', 'Premium', 'Beef Stew & Brown Rice', 'Beef stew with brown rice and vegetables.', 14, 25);
+
+CREATE TABLE payments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50),
+  phone_number VARCHAR(20),
+  amount INT,
+  transaction_id VARCHAR(100),
+  payment_date DATETIME,
+  expiry_date DATETIME
+);
