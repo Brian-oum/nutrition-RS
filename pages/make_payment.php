@@ -16,152 +16,6 @@ $username = $_SESSION["username"];
   <link rel="stylesheet" href="../assets/css/style.css"/>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
-  <style>
-.cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
-  justify-content: center;
-}
-
-.card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  width: 240px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.card h3 {
-  margin-bottom: 10px;
-  font-size: 1.2em;
-}
-
-.card p {
-  margin: 8px 0;
-  color: #555;
-}
-
-.card .plan-description {
-  color: #777;
-  font-size: 0.9em;
-  margin: 10px 0;
-}
-
-.card .btn {
-  margin-top: 12px;
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.card .btn:hover {
-  background: #218838;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.6);
-  justify-content: center;
-  align-items: center;
-  opacity: 0;
-  animation: fadeIn 0.3s forwards;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  position: relative;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  animation: scaleIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes scaleIn {
-  from { transform: scale(0.8); }
-  to { transform: scale(1); }
-}
-.modal-content .btn {
-  margin: 12px auto 0 auto;
-  display: block;
-  background: #28a745;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.modal-content .btn:hover {
-  background: #218838;
-  transform: scale(1.03);
-}
-
-.close-modal {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  font-size: 24px;
-  cursor: pointer;
-  color: #888;
-}
-
-.close-modal:hover {
-  color: #333;
-}
-
-.plan-info {
-  margin-bottom: 20px;
-  padding: 10px;
-  background-color: #f9f9f9;
-  border-radius: 6px;
-  font-size: 0.9em;
-}
-
-.plan-info h4 {
-  margin-bottom: 10px;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 8px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-input[type="text"]:focus {
-  outline: none;
-  border-color: #28a745;
-}
-
-  </style>
 </head>
 <body>
 
@@ -217,8 +71,10 @@ input[type="text"]:focus {
       <input type="hidden" name="amount" id="modal-amount">
       <input type="hidden" name="days" id="modal-days">
       <input type="hidden" name="username" value="<?= htmlspecialchars($username); ?>">
-      <label for="phone_number">Phone Number:</label>
-      <input type="text" name="phone_number" placeholder="07XXXXXXXX" required>
+
+      <label for="phone_number">Phone Number (Safaricom - e.g., 07XXXXXXXX):</label>
+      <input type="text" name="phone_number" id="phone_number" pattern="^07\d{8}$" maxlength="10" placeholder="07XXXXXXXX" required>
+
       <br><br>
       <button type="submit" class="btn">Proceed to Pay</button>
     </form>
