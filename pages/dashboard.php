@@ -18,6 +18,37 @@ if ($hour >= 5 && $hour < 12) {
 } else {
     $greeting = "Good Night";
 }
+
+include '../config/db.php';
+
+// Set MySQL session timezone to Africa/Nairobi to avoid mismatch
+$conn->query("SET time_zone = 'Africa/Nairobi'");
+
+// Get all subscriptions for the user, ordered by expiry date
+$expiry_result = $conn->query("SELECT expiry_date FROM payments WHERE username='$username' ORDER BY expiry_date DESC");
+
+$subscriptions_message = "";
+
+if ($expiry_result && $expiry_result->num_rows > 0) {
+    $subscriptions_message = "<h3>Your Subscriptions:</h3><ul>";
+    
+    while ($row = $expiry_result->fetch_assoc()) {
+        $expiry = new DateTime($row['expiry_date']);
+        $now = new DateTime();
+
+        // Display subscription status for each subscription
+        if ($expiry > $now) {
+            $interval = $now->diff($expiry);
+            $subscriptions_message .= "<li>⏳ Subscription active - <strong>{$interval->d} days, {$interval->h} hours, {$interval->i} minutes</strong> remaining (until {$expiry->format('d M Y H:i')})</li>";
+        } else {
+            $subscriptions_message .= "<li>❌ Subscription expired on <strong>{$expiry->format('d M Y H:i')}</strong></li>";
+        }
+    }
+
+    $subscriptions_message .= "</ul>";
+} else {
+    $subscriptions_message = "⚠️ No subscriptions found.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +80,7 @@ if ($hour >= 5 && $hour < 12) {
         } else {
           echo "
             <h2>Nutrition Recommender System</h2>
+            <p style='margin-top: 1rem; font-weight: bold; color: #007bff;'>$subscriptions_message</p>
             <p>Select an option from the sidebar || Manage your child's nutrition with personalized recommendations.</p>
             <div class='user-manual'>
               <h3>How to Use the System</h3>
