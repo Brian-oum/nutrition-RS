@@ -1,5 +1,5 @@
 <?php
-/*session_start();
+session_start();
 include '../config/db.php';  
 
 // Check if user is logged in
@@ -11,7 +11,7 @@ if (!isset($_SESSION["username"])) {
 // Verify DB connection
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
-}*/
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

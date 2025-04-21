@@ -1,5 +1,5 @@
 <?php
-/*session_start();
+session_start();
 include('../config/db.php');
 
 // Ensure user is logged in
@@ -15,7 +15,7 @@ $children_result = mysqli_query($conn, $children_query);
 if (mysqli_num_rows($children_result) == 0) {
     echo "<script>alert('No child details found! Please add your child’s details first.'); window.location.href='details.php';</script>";
     exit();
-}*/
+}
 ?>
 
 <!DOCTYPE html>

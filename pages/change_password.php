@@ -1,5 +1,5 @@
 <?php
-/*session_start();
+session_start();
 include('../config/db.php');
 
 // Check if the form is submitted
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $message = "Caregiver not found!";
     }
-}*/
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
