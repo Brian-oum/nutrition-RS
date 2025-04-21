@@ -1,17 +1,78 @@
 <?php
 session_start();
+date_default_timezone_set('Africa/Nairobi');
+
 if (!isset($_SESSION["username"])) {
     header("Location: ../index.php");
     exit();
 }
 
-include '../includes/db_connect.php';
+include '../config/db.php';
+include '../config/mpesa_config.php';
 
-$message = ""; // To hold success or error messages
+// Get M-Pesa Access Token
+function getAccessToken() {
+    $url = 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+    $credentials = base64_encode(MPESA_CONSUMER_KEY . ':' . MPESA_CONSUMER_SECRET);
+    $headers = ['Authorization: Basic ' . $credentials];
+
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response);
+    return $result->access_token ?? null;
+}
+
+// Send STK Push
+function sendSTKPush($phone, $amount, $transactionId) {
+    $accessToken = getAccessToken();
+    if (!$accessToken) return ['error' => 'Unable to obtain access token.'];
+
+    $timestamp = date('YmdHis');
+    $password = base64_encode(MPESA_SHORTCODE . MPESA_PASSKEY . $timestamp);
+
+    $accountNumber = "Nutrition-RS";
+    $transactionDesc = "Pay KES $amount to Nutrition-RS account $accountNumber";
+
+    $data = [
+        'BusinessShortCode' => MPESA_SHORTCODE,
+        'Password' => $password,
+        'Timestamp' => $timestamp,
+        'TransactionType' => 'CustomerPayBillOnline',
+        'Amount' => $amount,
+        'PartyA' => $phone,
+        'PartyB' => MPESA_SHORTCODE,
+        'PhoneNumber' => $phone,
+        'CallBackURL' => MPESA_CALLBACK_URL,
+        'AccountReference' => $accountNumber,
+        'TransactionDesc' => $transactionDesc
+    ];
+
+    $headers = [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $accessToken
+    ];
+
+    $ch = curl_init('https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    if ($err) return ['error' => $err];
+    return json_decode($response, true);
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
-    $phone_number = $_POST['phone_number'];
+    $phone_number = preg_replace('/^0/', '254', $_POST['phone_number']);
     $amount = (int)$_POST['amount'];
     $days = (int)$_POST['days'];
     $plan = $_POST['plan'];
@@ -20,23 +81,30 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $payment_date = date("Y-m-d H:i:s");
     $expiry_date = date("Y-m-d H:i:s", strtotime("+$days days"));
 
-    $sql = "INSERT INTO payments (username, phone_number, amount, transaction_id, payment_date, expiry_date)
-            VALUES (?, ?, ?, ?, ?, ?)";
+    $stkResponse = sendSTKPush($phone_number, $amount, $transaction_id);
 
-    $stmt = $conn->prepare($sql);
-    if ($stmt) {
-        $stmt->bind_param("ssisss", $username, $phone_number, $amount, $transaction_id, $payment_date, $expiry_date);
-        if ($stmt->execute()) {
-            $message = "<div class='success'>Payment successful for KES $amount. Access valid until $expiry_date.</div>";
-        } else {
-            $message = "<div class='error'>Failed to complete payment. Please try again.</div>";
+    if (isset($stkResponse['error'])) {
+        echo "<script>alert('❌ Failed to initiate payment: {$stkResponse['error']}'); window.location='make_payment.php';</script>";
+        exit();
+    }
+
+    if ($stkResponse['ResponseCode'] === "0") {
+        $sql = "INSERT INTO payments (username, phone_number, amount, transaction_id, payment_date, expiry_date, status)
+                VALUES (?, ?, ?, ?, ?, ?, 'Pending')";
+        $stmt = $conn->prepare($sql);
+        if ($stmt) {
+            $stmt->bind_param("ssisss", $username, $phone_number, $amount, $transaction_id, $payment_date, $expiry_date);
+            $stmt->execute();
+            $stmt->close();
         }
-        $stmt->close();
+
+        echo "<script>alert('✅ Payment request sent. Check your phone.'); window.location='make_payment.php';</script>";
     } else {
-        $message = "<div class='error'>Server error. Please try later.</div>";
+        echo "<script>alert('❌ STK Push failed: {$stkResponse['ResponseDescription']}'); window.location='make_payment.php';</script>";
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,25 +112,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   <meta charset="UTF-8">
   <title>Process Payment</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-  <style>
-    .success {
-      background: #d4edda;
-      padding: 1rem;
-      border-left: 5px solid #28a745;
-      margin: 1rem;
-      color: #155724;
-    }
-    .error {
-      background: #f8d7da;
-      padding: 1rem;
-      border-left: 5px solid #dc3545;
-      margin: 1rem;
-      color: #721c24;
-    }
-    .main-content {
-      padding: 2rem;
-    }
-  </style>
 </head>
 <body>
 
@@ -70,9 +119,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <?php include '../includes/sidebar.php'; ?>
 
 <div class="main-content">
-  <h2>Payment Status</h2>
-  <?= $message ?>
-  <a href="make_payment.php" style="display:inline-block;margin-top:1rem;">Back to Subscriptions</a>
+  <h2>Processing Payment...</h2>
+  <p>If you are not redirected, <a href="make_payment.php">click here</a>.</p>
 </div>
 
 <?php include '../includes/footer.php'; ?>

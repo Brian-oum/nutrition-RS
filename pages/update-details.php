@@ -1,5 +1,5 @@
 <?php
-/*include '../config/db.php';
+include '../config/db.php';
 
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
         echo "<script>alert('❌ Child not found. Please enter a valid name.'); window.location='dashboard.php';</script>";
     }
-}*/
+}
 ?>
 
 <!DOCTYPE html>
@@ -117,16 +117,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             
             <!-- Update Form -->
             <form id="update-form" action="update-details.php" method="POST">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="search-child" placeholder="Search child by name..." autocomplete="off">
-                    <div id="search-results" class="search-dropdown"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="name"><i class="fas fa-user"></i> Child's Name:</label>
-                    <input type="text" id="name" name="name" readonly>
-                </div>
+            <div class="form-group">
+    <label for="name"><i class="fas fa-user"></i> Select Child:</label>
+    <select name="name" id="name" required>
+        <option value="">=== Select Child ===</option>
+        <?php
+        $sql = "SELECT child_name FROM children ORDER BY child_name ASC";
+        $result = $conn->query($sql);
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo "<option value='" . htmlspecialchars($row['child_name']) . "'>" . htmlspecialchars($row['child_name']) . "</option>";
+            }
+        }
+        ?>
+    </select>
+</div>
 
                 <div class="form-group">
                     <label for="weight"><i class="fas fa-weight"></i> Weight (kg):</label>

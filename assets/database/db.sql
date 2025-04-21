@@ -1,5 +1,3 @@
---- all database code for the project i.e tables and records
-CREATE DATABASE nutrition_system;
 
 USE nutrition_system;
 
@@ -110,8 +108,6 @@ VALUES
 ('2-3 years', 'Dinner', 'Premium', 'Pasta & Meatballs', 'Whole wheat pasta with meatballs.', 12, 18);
 
 
---add 3 years
-
 INSERT INTO meal_plans (age_group, meal_time, meal_type, meal_name, description, min_weight, max_weight)
 VALUES 
 ('4-5 years', 'Breakfast', 'Affordable', 'Tea with Wholemeal Bread', 'Mild tea with wholemeal bread.', 14, 25),
@@ -128,3 +124,16 @@ VALUES
 
 ('4-5 years', 'Dinner', 'Affordable', 'Rice & Stewed Green Grams', 'Rice with green grams (Ndengu).', 14, 25),
 ('4-5 years', 'Dinner', 'Premium', 'Beef Stew & Brown Rice', 'Beef stew with brown rice and vegetables.', 14, 25);
+
+CREATE TABLE payments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    phone_number VARCHAR(20),
+    amount INT,
+    transaction_id VARCHAR(100),
+    payment_date DATETIME,
+    expiry_date DATETIME,
+    status ENUM('Pending', 'Success', 'Failed') DEFAULT 'Pending',
+    payment_amount INT NULL,
+    status_message TEXT NULL
+);
