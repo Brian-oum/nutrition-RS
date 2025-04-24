@@ -8,6 +8,21 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 
+// Subscription check
+$parent_username = $_SESSION["username"];
+$now = date('Y-m-d H:i:s');
+$subQuery = "SELECT * FROM payments WHERE username = ? AND expiry_date > ?";
+$subStmt = $conn->prepare($subQuery);
+$subStmt->bind_param("ss", $parent_username, $now);
+$subStmt->execute();
+$subResult = $subStmt->get_result();
+
+if ($subResult->num_rows === 0) {
+    echo "<script>alert('You need an active subscription to access this feature.'); window.location.href='make_payment.php';</script>";
+    exit();
+}
+$subStmt->close();
+
 // Verify DB connection
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
@@ -23,10 +38,6 @@ if (!$conn) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
     <link rel="stylesheet" href="../assets/css/style.css"/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-
-
-    </style>
 </head>
 <body>
 
@@ -44,7 +55,6 @@ if (!$conn) {
                 <select id="child_id" name="child_id">
                     <option value="">-- Select a Child --</option>
                     <?php
-                    $parent_username = $_SESSION["username"];
                     $sql = "SELECT id, child_name FROM children WHERE parent_username = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("s", $parent_username);
@@ -125,5 +135,7 @@ function updateGraph(childName, progressData) {
     progressChart.update();
 }
 </script>
+<script src="../assets/js/script.js"></script>
+
 </body>
 </html>

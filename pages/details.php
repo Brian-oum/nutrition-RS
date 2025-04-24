@@ -8,8 +8,26 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 
+$username = $_SESSION["username"];
+
+// Check for active subscription
+date_default_timezone_set("Africa/Nairobi");
+$now = date("Y-m-d H:i:s");
+
+$check_sub = $conn->prepare("SELECT * FROM payments WHERE username = ? AND expiry_date > ? ORDER BY expiry_date DESC LIMIT 1");
+$check_sub->bind_param("ss", $username, $now);
+$check_sub->execute();
+$result = $check_sub->get_result();
+
+if ($result->num_rows === 0) {
+    // No active subscription
+    echo "<script>alert('You need an active subscription to access this feature.'); window.location.href='make_payment.php';</script>";
+    exit();
+}
+
+// Continue with form submission if POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $parent_username = $_SESSION["username"]; // Get logged-in user's email
+    $parent_username = $username;
     $child_name = $_POST["name"];
     $gender = $_POST["gender"];
     $dob = $_POST["dob"];
@@ -17,10 +35,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $weight = $_POST["weight"];
     $dietary_restrictions = $_POST["diet"];
 
-    // Prepare SQL statement to prevent SQL injection
     $query = "INSERT INTO children (parent_username, child_name, gender, dob, height, weight, dietary_restrictions)
               VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
+
     if ($stmt = $conn->prepare($query)) {
         $stmt->bind_param("ssssdds", $parent_username, $child_name, $gender, $dob, $height, $weight, $dietary_restrictions);
 
@@ -51,16 +68,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
 
-  <!-- Include the header -->
   <?php include '../includes/header.php'; ?>
 
-  <!-- Flex container that wraps sidebar + content -->
   <div class="dash-container">
     
-    <!-- Sidebar on the left -->
     <?php include '../includes/sidebar.php'; ?>
     
-    <!-- Main content area -->
     <main class="content">
       <h2>Add Child's Details</h2>
 
@@ -93,7 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </main>
   </div>
 
-  <!-- Include footer -->
   <?php include '../includes/footer.php'; ?>
 
   <script src="../assets/js/script.js"></script>
