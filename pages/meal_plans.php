@@ -9,6 +9,22 @@ if (!isset($_SESSION["username"])) {
 }
 
 $parent_username = $_SESSION["username"];
+
+// Subscription check
+$now = date('Y-m-d H:i:s');
+$subQuery = "SELECT * FROM payments WHERE username = ? AND expiry_date > ?";
+$subStmt = $conn->prepare($subQuery);
+$subStmt->bind_param("ss", $parent_username, $now);
+$subStmt->execute();
+$subResult = $subStmt->get_result();
+
+if ($subResult->num_rows === 0) {
+    echo "<script>alert('You need an active subscription to access meal plans.'); window.location.href='make_payment.php';</script>";
+    exit();
+}
+$subStmt->close();
+
+// Get children data
 $children_query = "SELECT * FROM children WHERE parent_username = '$parent_username' ORDER BY id DESC";
 $children_result = mysqli_query($conn, $children_query);
 
