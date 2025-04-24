@@ -1,9 +1,31 @@
 <?php
+session_start();
 include '../config/db.php';
+
+if (!isset($_SESSION["username"])) {
+    echo "<script>alert('You must be logged in.'); window.location.href='login.php';</script>";
+    exit();
+}
 
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
+
+// Check for active subscription
+$username = $_SESSION["username"];
+$now = date('Y-m-d H:i:s');
+
+$subCheckQuery = "SELECT * FROM payments WHERE username = ? AND expiry_date > ?";
+$subStmt = $conn->prepare($subCheckQuery);
+$subStmt->bind_param("ss", $username, $now);
+$subStmt->execute();
+$subResult = $subStmt->get_result();
+
+if ($subResult->num_rows === 0) {
+    echo "<script>alert('You need an active subscription to access this page.'); window.location.href='make_payment.php';</script>";
+    exit();
+}
+$subStmt->close();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $name = trim($_POST['name']);
@@ -113,25 +135,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <main class="content">
             <h2>Update Child Details</h2>
 
-            <!-- Search Bar -->
-            
-            <!-- Update Form -->
             <form id="update-form" action="update-details.php" method="POST">
-            <div class="form-group">
-    <label for="name"><i class="fas fa-user"></i> Select Child:</label>
-    <select name="name" id="name" required>
-        <option value="">=== Select Child ===</option>
-        <?php
-        $sql = "SELECT child_name FROM children ORDER BY child_name ASC";
-        $result = $conn->query($sql);
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                echo "<option value='" . htmlspecialchars($row['child_name']) . "'>" . htmlspecialchars($row['child_name']) . "</option>";
-            }
-        }
-        ?>
-    </select>
-</div>
+                <div class="form-group">
+                    <label for="name"><i class="fas fa-user"></i> Select Child:</label>
+                    <select name="name" id="name" required>
+                        <option value="">=== Select Child ===</option>
+                        <?php
+                        $sql = "SELECT child_name FROM children ORDER BY child_name ASC";
+                        $result = $conn->query($sql);
+                        if ($result && $result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($row['child_name']) . "'>" . htmlspecialchars($row['child_name']) . "</option>";
+                            }
+                        }
+                        ?>
+                    </select>
+                </div>
 
                 <div class="form-group">
                     <label for="weight"><i class="fas fa-weight"></i> Weight (kg):</label>
