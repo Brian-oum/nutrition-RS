@@ -107,6 +107,22 @@ VALUES
 ('2-3 years', 'Dinner', 'Affordable', 'Ugali & Fried Cabbage', 'Soft ugali with stir-fried cabbage.', 12, 18),
 ('2-3 years', 'Dinner', 'Premium', 'Pasta & Meatballs', 'Whole wheat pasta with meatballs.', 12, 18);
 
+INSERT INTO meal_plans (age_group, meal_time, meal_type, meal_name, description, min_weight, max_weight)
+VALUES 
+('3-4 years', 'Breakfast', 'Affordable', 'Porridge & Sweet Potato', 'Millet porridge with slices of sweet potato.', 13, 22),
+('3-4 years', 'Breakfast', 'Premium', 'French Toast & Fruit', 'French toast with sliced fruits and honey.', 13, 22),
+
+('3-4 years', 'Mid-Morning Snack', 'Affordable', 'Boiled Eggs & Banana', 'Boiled eggs with a ripe banana.', 13, 22),
+('3-4 years', 'Mid-Morning Snack', 'Premium', 'Greek Yogurt & Berries', 'Plain yogurt with fresh berries.', 13, 22),
+
+('3-4 years', 'Lunch', 'Affordable', 'Ugali with Sukuma & Eggs', 'Ugali with fried sukuma wiki and boiled egg.', 13, 22),
+('3-4 years', 'Lunch', 'Premium', 'Beef Pilau & Veggies', 'Spiced rice with beef and mixed vegetables.', 13, 22),
+
+('3-4 years', 'Afternoon Snack', 'Affordable', 'Carrot Sticks & Hummus', 'Raw carrot sticks with simple hummus.', 13, 22),
+('3-4 years', 'Afternoon Snack', 'Premium', 'Fruit Kabobs', 'Fruit skewers with yogurt dip.', 13, 22),
+
+('3-4 years', 'Dinner', 'Affordable', 'Rice with Cabbage Stew', 'Plain rice with cabbage and tomato sauce.', 13, 22),
+('3-4 years', 'Dinner', 'Premium', 'Chicken Pasta & Broccoli', 'Whole grain pasta with grilled chicken and broccoli.', 13, 22);
 
 INSERT INTO meal_plans (age_group, meal_time, meal_type, meal_name, description, min_weight, max_weight)
 VALUES 
