@@ -19,7 +19,7 @@ $username = $_SESSION["username"] ?? "Guest";
   <button id="toggle-btn"><i class="fas fa-bars"></i></button>
   <h2 class="header-center"><?= $greeting . " , " . htmlspecialchars($username) . "!"; ?></h2>
   <div class="header-right">
-    <i class="fas fa-bell"></i>
+    <i class="fas fa-question-circle" title="How to use the system"></i>
     <span><?= $current_time; ?> HRS</span>
   </div>
 </div>
